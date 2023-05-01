@@ -68,6 +68,10 @@ func createMetricsReceiver(
 	if err != nil {
 		return nil, err
 	}
+	ruoks, err := newruokMetricsScraper(params, rConfig)
+	if err != nil {
+		return nil, err
+	}
 
 	scrp, err := scraperhelper.NewScraper(
 		typeStr,
@@ -78,10 +82,20 @@ func createMetricsReceiver(
 		return nil, err
 	}
 
+	scrp2, err := scraperhelper.NewScraper(
+		typeStr,
+		ruoks.scrape,
+		scraperhelper.WithShutdown(ruoks.shutdown),
+	)
+	if err != nil {
+		return nil, err
+	}
+
 	return scraperhelper.NewScraperControllerReceiver(
 		&rConfig.ScraperControllerSettings,
 		params,
 		consumer,
 		scraperhelper.AddScraper(scrp),
+		scraperhelper.AddScraper(scrp2),
 	)
 }
