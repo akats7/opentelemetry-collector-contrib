@@ -25,6 +25,7 @@ var zookeeperFormatRE = regexp.MustCompile(`(^zk_\w+)\s+([\w\.\-]+)`)
 
 const (
 	mntrCommand = "mntr"
+	ruokCommand = "ruok"
 )
 
 type zookeeperMetricsScraper struct {
@@ -77,12 +78,22 @@ func (z *zookeeperMetricsScraper) scrape(ctx context.Context) (pmetric.Metrics, 
 	var ctxWithTimeout context.Context
 	ctxWithTimeout, z.cancel = context.WithTimeout(ctx, z.config.Timeout)
 
-	response, err := z.runCommand(ctxWithTimeout, "mntr")
+	responseMntr, err := z.runCommand(ctxWithTimeout, "mntr")
 	if err != nil {
 		return pmetric.NewMetrics(), err
 	}
 
-	return z.processMntr(response)
+	responseRuok, err := z.runCommand(ctxWithTimeout, "ruok")
+	if err != nil {
+		return pmetric.NewMetrics(), err
+	}
+
+	resourceOpts := make([]metadata.ResourceMetricsOption, 0, 2)
+
+	z.processMntr(responseMntr, resourceOpts)
+	z.processRuok(responseRuok)
+
+	return z.mb.Emit(resourceOpts...), nil
 }
 
 func (z *zookeeperMetricsScraper) runCommand(ctx context.Context, command string) ([]string, error) {
@@ -123,10 +134,9 @@ func (z *zookeeperMetricsScraper) runCommand(ctx context.Context, command string
 	return response, nil
 }
 
-func (z *zookeeperMetricsScraper) processMntr(response []string) (pmetric.Metrics, error) {
+func (z *zookeeperMetricsScraper) processMntr(response []string, resourceOpts []metadata.ResourceMetricsOption) {
 	creator := newMetricCreator(z.mb)
 	now := pcommon.NewTimestampFromTime(time.Now())
-	resourceOpts := make([]metadata.ResourceMetricsOption, 0, 2)
 	for _, line := range response {
 		parts := zookeeperFormatRE.FindStringSubmatch(line)
 		if len(parts) != 3 {
@@ -167,7 +177,29 @@ func (z *zookeeperMetricsScraper) processMntr(response []string) (pmetric.Metric
 
 	// Generate computed metrics
 	creator.generateComputedMetrics(z.logger, now)
-	return z.mb.Emit(resourceOpts...), nil
+
+}
+
+func (z *zookeeperMetricsScraper) processRuok(response []string) {
+	creator := newMetricCreator(z.mb)
+	now := pcommon.NewTimestampFromTime(time.Now())
+	if len(response) != 1 {
+		// validate that empty response still sends empty string
+		z.logger.Error("invalid response from ruok",
+			zap.String("command", ruokCommand),
+		)
+	}
+	metricKey := "ruok"
+	metricValue := int64(0)
+
+	if response[0] == "imok" {
+		metricValue = int64(1)
+	}
+
+	recordDataPoints := creator.recordDataPointsFunc(metricKey)
+
+	recordDataPoints(now, metricValue)
+
 }
 
 func closeConnection(conn net.Conn) error {
