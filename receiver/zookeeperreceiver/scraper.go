@@ -185,24 +185,22 @@ func (z *zookeeperMetricsScraper) processRuok(response []string) {
 	creator := newMetricCreator(z.mb)
 	now := pcommon.NewTimestampFromTime(time.Now())
 
-	if len(response) != 1 {
-		// validate that empty response still sends empty string
-		z.logger.Error("invalid response from ruok",
-			zap.String("command", ruokCommand),
-		)
-		return
-	}
 	metricKey := "ruok"
 	metricValue := int64(0)
 
-	if response[0] == "imok" {
-		metricValue = int64(1)
+	if len(response) > 0 {
+		if response[0] == "imok" {
+			metricValue = int64(1)
+		} else {
+			z.logger.Error("invalid response from ruok",
+				zap.String("command", ruokCommand),
+			)
+			return
+		}
 	}
 
 	recordDataPoints := creator.recordDataPointsFunc(metricKey)
-
 	recordDataPoints(now, metricValue)
-
 }
 
 func closeConnection(conn net.Conn) error {

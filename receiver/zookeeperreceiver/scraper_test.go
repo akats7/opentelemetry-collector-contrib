@@ -132,6 +132,21 @@ func TestZookeeperMetricsScraperScrape(t *testing.T) {
 			expectedNumResourceMetrics: 0,
 		},
 		{
+			name: "Empty response from ruok",
+			mockedZKCmdToOutputFilename: map[string]string{
+				"mntr": "mntr-3.4.14",
+				"ruok": "ruok-null",
+			},
+			expectedMetricsFilename: "null-ruok",
+			expectedLogs: []logMsg{
+				{
+					msg:   "metric computation failed",
+					level: zapcore.DebugLevel,
+				},
+			},
+			expectedNumResourceMetrics: 2,
+		},
+		{
 			name: "Invalid response from ruok",
 			mockedZKCmdToOutputFilename: map[string]string{
 				"mntr": "mntr-3.4.14",
