@@ -10,6 +10,7 @@ require (
 	github.com/open-telemetry/opentelemetry-collector-contrib/connector/routingconnector v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/connector/servicegraphconnector v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector v0.82.0
+	github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/alibabacloudlogserviceexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awscloudwatchlogsexporter v0.82.0
 	github.com/open-telemetry/opentelemetry-collector-contrib/exporter/awsemfexporter v0.82.0
@@ -1138,3 +1139,5 @@ replace github.com/outcaste-io/ristretto v0.2.0 => github.com/outcaste-io/ristre
 
 // ambiguous import: found package cloud.google.com/go/compute/metadata in multiple modules
 replace cloud.google.com/go => cloud.google.com/go v0.110.2
+
+replace github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector => ../../connector/failoverconnector
