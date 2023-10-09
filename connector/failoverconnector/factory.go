@@ -87,6 +87,7 @@ func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) er
 			f.failover.handlePipelineError()
 			continue
 		}
+		f.failover.reportStable()
 		return nil
 	}
 	return fmt.Errorf("%v", errNoValidPipeline)
