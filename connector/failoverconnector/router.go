@@ -12,7 +12,7 @@ type consumerProvider[C any] func(...component.ID) (C, error)
 
 type failoverRouter[C any] struct {
 	consumerProvider consumerProvider[C]
-	pipelines        []component.ID
+	pipelines        [][]component.ID
 	retryInterval    time.Duration
 	retryGap         time.Duration
 	consumers        []C
@@ -38,6 +38,7 @@ func newFailoverRouter[C any](provider consumerProvider[C], cfg *Config) *failov
 		maxRetry:         cfg.MaxRetry,
 		index:            0,
 		nextIndex:        0,
+		pipelineRetries:  make(map[int]int),
 	}
 }
 
@@ -49,7 +50,7 @@ func (f *failoverRouter[C]) registerConsumers() {
 	// TODO support fanout consumers
 	consumers := make([]C, 0)
 	for _, pipeline := range f.pipelines {
-		newConsumer, err := f.consumerProvider(pipeline)
+		newConsumer, err := f.consumerProvider(pipeline...)
 		if err == nil {
 			consumers = append(consumers, newConsumer)
 		} else {
@@ -59,23 +60,67 @@ func (f *failoverRouter[C]) registerConsumers() {
 	f.consumers = consumers
 }
 
+/*
+REMOVE COMMENT:
+Option one: Use ticker in handlePipelineError to call retry multiple times
+
+Option two: Use time.afterFunc and have it run continuously
+*/
 func (f *failoverRouter[C]) handlePipelineError() {
-
-	// May need to move check of index == stable to know whether to kill existing retry
-	if f.inRetry && (f.index != f.stableIndex) {
-		f.pipelineRetries[f.index]++
-		f.updatePipelineIndex()
-	} else {
-		// kill existing retry goroutine when pipeline fails again
-		if f.inRetry {
-			f.done <- true
-		}
-		// Need to adjust to ensure it keeps retrying, possibly use ticker instead
-		time.AfterFunc(f.retryInterval-f.retryGap, f.retryHighPriorityPipelines)
+	//fmt.Printf("index: %v, stableIndex: %v, nextIndex: %v \n", f.index, f.stableIndex, f.nextIndex)
+	fmt.Println("Called handle")
+	if f.index == f.stableIndex {
+		f.enableRetry()
 		f.nextPipeline()
+	} else {
+		f.pipelineRetries[f.index]++
+		//f.updatePipelineIndex()
+		f.setToStableIndex()
 	}
-
 }
+
+func (f *failoverRouter[C]) enableRetry() {
+
+	// Kill existing retry
+	if f.inRetry {
+		f.done <- true
+	}
+	ticker := time.NewTicker(f.retryInterval)
+	ch := make(chan bool)
+
+	f.inRetry = true
+
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				f.retryHighPriorityPipelines(ch)
+			case <-f.done:
+				ch <- true
+				f.inRetry = false
+				return
+			}
+		}
+	}()
+}
+
+//func (f *failoverRouter[C]) handlePipelineError() {
+//
+//	// May need to move check of index == stable to know whether to kill existing retry
+//	if f.inRetry && (f.index != f.stableIndex) {
+//		f.pipelineRetries[f.index]++
+//		f.updatePipelineIndex()
+//	} else {
+//		// kill existing retry goroutine when pipeline fails again
+//		if f.inRetry {
+//			f.done <- true
+//		}
+//		// Need to adjust to ensure it keeps retrying, possibly use ticker instead
+//		time.AfterFunc(f.retryInterval-f.retryGap, f.retryHighPriorityPipelines)
+//		f.nextPipeline()
+//	}
+//
+//}
 
 func (f *failoverRouter[C]) nextPipeline() {
 
@@ -108,7 +153,7 @@ else if retrypipeline is stable then, end retry ticker and set original pipeline
 
 */
 
-func (f *failoverRouter[C]) retryHighPriorityPipelines() {
+func (f *failoverRouter[C]) retryHighPriorityPipelines(ch chan bool) {
 
 	ticker := time.NewTicker(f.retryGap)
 	f.inRetry = true
@@ -119,16 +164,16 @@ func (f *failoverRouter[C]) retryHighPriorityPipelines() {
 	}()
 
 	f.resetNextIndex()
-	// Schedule swap every retry gap
 	for i := 0; i < f.stableIndex; i++ {
 		if f.maxRetriesUsed(i) {
 			continue
 		}
 		select {
-		case <-f.done:
+		case <-ch:
 			return
 		case <-ticker.C:
-			f.updatePipelineIndex()
+			//f.updatePipelineIndex()
+			f.setToRetryIndex(i)
 		}
 	}
 }
@@ -148,6 +193,26 @@ func (f *failoverRouter[C]) updatePipelineIndex() {
 	f.indexLock.Unlock()
 }
 
+func (f *failoverRouter[C]) setToStableIndex() {
+	f.indexLock.Lock()
+
+	f.nextIndex = f.index + 1
+	f.index = f.stableIndex
+
+	f.indexLock.Unlock()
+
+}
+
+func (f *failoverRouter[C]) setToRetryIndex(index int) {
+	f.indexLock.Lock()
+
+	f.index = index
+	f.nextIndex = f.stableIndex
+
+	f.indexLock.Unlock()
+
+}
+
 func (f *failoverRouter[C]) resetNextIndex() {
 
 	f.nextIndex = 0
@@ -164,6 +229,8 @@ func (f *failoverRouter[C]) reportStable() {
 		return
 	}
 	f.pipelineRetries[f.index] = 0
+	f.stableIndex = f.index
+	f.nextIndex = 0
 	f.done <- true
 }
 

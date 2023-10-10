@@ -78,7 +78,7 @@ func (f *tracesFailover) Capabilities() consumer.Capabilities {
 }
 
 func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
-
+	fmt.Printf("index: %v, stableIndex: %v, nextIndex: %v \n", f.failover.index, f.failover.stableIndex, f.failover.nextIndex)
 	for f.failover.pipelineIsValid() {
 		tc := f.failover.getCurrentConsumer()
 		err := tc.ConsumeTraces(ctx, td)
