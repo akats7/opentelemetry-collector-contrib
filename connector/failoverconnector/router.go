@@ -144,7 +144,7 @@ func (p *pipelineSelector) setToRetryIndex(index int) {
 
 // Potentially change mechanism to directly change elements in pipelines slice instead of tracking pipelines to skip
 func (p *pipelineSelector) maxRetriesUsed(index int) bool {
-	return p.pipelineRetries[index] < p.maxRetry
+	return p.pipelineRetries[index] >= p.maxRetry
 }
 
 func (p *pipelineSelector) setStable() {
