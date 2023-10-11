@@ -78,7 +78,7 @@ func (f *tracesFailover) Capabilities() consumer.Capabilities {
 }
 
 func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
-	fmt.Printf("index: %v, stableIndex: %v, nextIndex: %v \n", f.failover.index, f.failover.stableIndex, f.failover.nextIndex)
+	fmt.Printf("currentIndex: %v, stableIndex: %v \n", f.failover.pS.currentIndex, f.failover.pS.stableIndex)
 	for f.failover.pipelineIsValid() {
 		tc := f.failover.getCurrentConsumer()
 		err := tc.ConsumeTraces(ctx, td)
@@ -90,7 +90,8 @@ func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) er
 		f.failover.reportStable()
 		return nil
 	}
-	return fmt.Errorf("%v", errNoValidPipeline)
+	f.logger.Error("All provided pipelines return errors, dropping data")
+	return errNoValidPipeline
 }
 
 //	fmt.Println("Calling failover ConsumeTraces")

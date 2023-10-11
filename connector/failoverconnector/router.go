@@ -12,44 +12,30 @@ type consumerProvider[C any] func(...component.ID) (C, error)
 
 type failoverRouter[C any] struct {
 	consumerProvider consumerProvider[C]
-	pipelines        [][]component.ID
-	retryInterval    time.Duration
-	retryGap         time.Duration
+	cfg              *Config
+	pS               *pipelineSelector
 	consumers        []C
-	indexLock        sync.Mutex
-	pipelineRetries  map[int]int
-	done             chan bool // Need to init channel
-	maxRetry         int
-	index            int
-	nextIndex        int
-	stableIndex      int
+	done             chan bool
 	inRetry          bool
 }
 
 var errNoValidPipeline = errors.New("All provided pipelines return errors")
 
 func newFailoverRouter[C any](provider consumerProvider[C], cfg *Config) *failoverRouter[C] {
-
 	return &failoverRouter[C]{
 		consumerProvider: provider,
-		pipelines:        cfg.ExporterPriority,
-		retryInterval:    cfg.RetryInterval,
-		retryGap:         cfg.RetryGap,
-		maxRetry:         cfg.MaxRetry,
-		index:            0,
-		nextIndex:        0,
-		pipelineRetries:  make(map[int]int),
+		cfg:              cfg,
+		pS:               newPipelineSelector(cfg),
 	}
 }
 
 func (f *failoverRouter[C]) getCurrentConsumer() C {
-	return f.consumers[f.index]
+	return f.consumers[f.pS.currentIndex]
 }
 
 func (f *failoverRouter[C]) registerConsumers() {
-	// TODO support fanout consumers
 	consumers := make([]C, 0)
-	for _, pipeline := range f.pipelines {
+	for _, pipeline := range f.cfg.ExporterPriority {
 		newConsumer, err := f.consumerProvider(pipeline...)
 		if err == nil {
 			consumers = append(consumers, newConsumer)
@@ -60,41 +46,28 @@ func (f *failoverRouter[C]) registerConsumers() {
 	f.consumers = consumers
 }
 
-/*
-REMOVE COMMENT:
-Option one: Use ticker in handlePipelineError to call retry multiple times
-
-Option two: Use time.afterFunc and have it run continuously
-*/
 func (f *failoverRouter[C]) handlePipelineError() {
-	//fmt.Printf("index: %v, stableIndex: %v, nextIndex: %v \n", f.index, f.stableIndex, f.nextIndex)
-	fmt.Println("Called handle")
-	if f.index == f.stableIndex {
+	if f.pS.currentIndexStable() {
+		f.pS.nextPipeline()
 		f.enableRetry()
-		f.nextPipeline()
 	} else {
-		f.pipelineRetries[f.index]++
-		//f.updatePipelineIndex()
-		f.setToStableIndex()
+		f.pS.setStableIndex()
 	}
 }
 
 func (f *failoverRouter[C]) enableRetry() {
-
-	// Kill existing retry
 	if f.inRetry {
 		f.done <- true
 	}
-	ticker := time.NewTicker(f.retryInterval)
-	ch := make(chan bool)
-
 	f.inRetry = true
+	ticker := time.NewTicker(f.cfg.RetryInterval)
+	ch := make(chan bool)
 
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				f.retryHighPriorityPipelines(ch)
+				f.retryHighPriorityPipelines(f.pS.stableIndex, ch)
 			case <-f.done:
 				ch <- true
 				f.inRetry = false
@@ -104,58 +77,13 @@ func (f *failoverRouter[C]) enableRetry() {
 	}()
 }
 
-//func (f *failoverRouter[C]) handlePipelineError() {
-//
-//	// May need to move check of index == stable to know whether to kill existing retry
-//	if f.inRetry && (f.index != f.stableIndex) {
-//		f.pipelineRetries[f.index]++
-//		f.updatePipelineIndex()
-//	} else {
-//		// kill existing retry goroutine when pipeline fails again
-//		if f.inRetry {
-//			f.done <- true
-//		}
-//		// Need to adjust to ensure it keeps retrying, possibly use ticker instead
-//		time.AfterFunc(f.retryInterval-f.retryGap, f.retryHighPriorityPipelines)
-//		f.nextPipeline()
-//	}
-//
-//}
-
-func (f *failoverRouter[C]) nextPipeline() {
-
-	// WILL NEED TO ASSIGN INDEX TO NEXTINDEX AND FIGURE OUT VALUE OF NEXTINDEX and check if max retries used
-	f.indexLock.Lock()
-
-	for ok := true; ok; ok = f.pipelineRetries[f.index] < f.maxRetry {
-		f.index++
-	}
-	f.stableIndex = f.index
-
-	f.indexLock.Unlock()
-}
-
 func (f *failoverRouter[C]) pipelineIsValid() bool {
-	return f.index < len(f.pipelines)
+	fmt.Printf("pipeline is valid: %v \n", f.pS.currentIndex < len(f.cfg.ExporterPriority))
+	return f.pS.currentIndex < len(f.cfg.ExporterPriority)
 }
 
-/*
-If inRetry mode, until a stable pipeline is found should try next pipeline every interval
-
-expected behavior,
-
-interval triggers -> pipeline switches to next retry pipeline,
-
-if retry pipeline returns error -> switch to stable
-pipeline, set nextIndex values to next retry pipeline
-
-else if retrypipeline is stable then, end retry ticker and set original pipeline to stable
-
-*/
-
-func (f *failoverRouter[C]) retryHighPriorityPipelines(ch chan bool) {
-
-	ticker := time.NewTicker(f.retryGap)
+func (f *failoverRouter[C]) retryHighPriorityPipelines(stableIndex int, ch chan bool) {
+	ticker := time.NewTicker(f.cfg.RetryGap)
 	f.inRetry = true
 
 	defer func() {
@@ -163,76 +91,106 @@ func (f *failoverRouter[C]) retryHighPriorityPipelines(ch chan bool) {
 		f.inRetry = false
 	}()
 
-	f.resetNextIndex()
-	for i := 0; i < f.stableIndex; i++ {
-		if f.maxRetriesUsed(i) {
+	for i := 0; i < stableIndex; i++ {
+		if f.pS.maxRetriesUsed(i) {
 			continue
 		}
 		select {
 		case <-ch:
 			return
 		case <-ticker.C:
-			//f.updatePipelineIndex()
-			f.setToRetryIndex(i)
+			f.pS.setToRetryIndex(i)
 		}
 	}
 }
 
-func (f *failoverRouter[C]) updatePipelineIndex() {
-
-	f.indexLock.Lock()
-
-	tmpIndex := f.index
-	f.index = f.nextIndex
-	if tmpIndex == f.stableIndex {
-		f.nextIndex = f.stableIndex
-	} else {
-		f.nextIndex = tmpIndex + 1
+func (f *failoverRouter[C]) reportStable() {
+	if f.pS.currentIndexStable() {
+		return
 	}
-
-	f.indexLock.Unlock()
+	f.pS.setStable()
+	f.done <- true
 }
 
-func (f *failoverRouter[C]) setToStableIndex() {
-	f.indexLock.Lock()
-
-	f.nextIndex = f.index + 1
-	f.index = f.stableIndex
-
-	f.indexLock.Unlock()
-
+type pipelineSelector struct {
+	currentIndex    int
+	stableIndex     int
+	lock            sync.Mutex
+	pipelineRetries []int
+	maxRetry        int
 }
 
-func (f *failoverRouter[C]) setToRetryIndex(index int) {
-	f.indexLock.Lock()
-
-	f.index = index
-	f.nextIndex = f.stableIndex
-
-	f.indexLock.Unlock()
-
+func (p *pipelineSelector) nextPipeline() {
+	p.lock.Lock()
+	for ok := true; ok; ok = p.pipelineRetries[p.currentIndex] < p.maxRetry {
+		p.currentIndex++
+	}
+	p.stableIndex = p.currentIndex
+	p.lock.Unlock()
 }
 
-func (f *failoverRouter[C]) resetNextIndex() {
+func (p *pipelineSelector) setStableIndex() {
+	p.lock.Lock()
+	p.pipelineRetries[p.currentIndex]++
+	p.currentIndex = p.stableIndex
+	p.lock.Unlock()
+}
 
-	f.nextIndex = 0
+func (p *pipelineSelector) setToRetryIndex(index int) {
+	p.lock.Lock()
+	p.currentIndex = index
+	p.lock.Unlock()
 }
 
 // Potentially change mechanism to directly change elements in pipelines slice instead of tracking pipelines to skip
-func (f *failoverRouter[C]) maxRetriesUsed(index int) bool {
-
-	return f.pipelineRetries[index] < f.maxRetry
+func (p *pipelineSelector) maxRetriesUsed(index int) bool {
+	return p.pipelineRetries[index] < p.maxRetry
 }
 
-func (f *failoverRouter[C]) reportStable() {
-	if f.index == f.stableIndex {
-		return
+func (p *pipelineSelector) setStable() {
+	p.pipelineRetries[p.currentIndex] = 0
+	p.stableIndex = p.currentIndex
+}
+
+func (p *pipelineSelector) currentIndexStable() bool {
+	return p.currentIndex == p.stableIndex
+}
+
+func newPipelineSelector(cfg *Config) *pipelineSelector {
+	return &pipelineSelector{
+		currentIndex:    0,
+		stableIndex:     0,
+		lock:            sync.Mutex{},
+		pipelineRetries: make([]int, len(cfg.ExporterPriority)),
+		maxRetry:        cfg.MaxRetry,
 	}
-	f.pipelineRetries[f.index] = 0
-	f.stableIndex = f.index
-	f.nextIndex = 0
-	f.done <- true
 }
+
+//func (f *failoverRouter[C]) setToStableIndex() {
+//	f.indexLock.Lock()
+//
+//	f.nextIndex = f.index + 1
+//	f.index = f.stableIndex
+//
+//	f.indexLock.Unlock()
+//
+//}
+
+//func (f *failoverRouter[C]) setToRetryIndex(index int) {
+//	f.indexLock.Lock()
+//
+//	f.index = index
+//	f.nextIndex = f.stableIndex
+//
+//	f.indexLock.Unlock()
+//
+//}
+
+// Potentially change mechanism to directly change elements in pipelines slice instead of tracking pipelines to skip
+//func (f *failoverRouter[C]) maxRetriesUsed(index int) bool {
+//
+//	return f.pipelineRetries[index] < f.cfg.MaxRetry
+//}
 
 //func getConsumeSignal(router *failoverRouter) {
 //
@@ -268,4 +226,49 @@ func (f *failoverRouter[C]) reportStable() {
 //		}
 //	}
 //	return nil
+//}
+
+//func (f *failoverRouter[C]) updatePipelineIndex() {
+//
+//	f.indexLock.Lock()
+//
+//	tmpIndex := f.index
+//	f.index = f.nextIndex
+//	if tmpIndex == f.stableIndex {
+//		f.nextIndex = f.stableIndex
+//	} else {
+//		f.nextIndex = tmpIndex + 1
+//	}
+//
+//	f.indexLock.Unlock()
+//}
+
+//func (f *failoverRouter[C]) handlePipelineError() {
+//
+//	// May need to move check of index == stable to know whether to kill existing retry
+//	if f.inRetry && (f.index != f.stableIndex) {
+//		f.pipelineRetries[f.index]++
+//		f.updatePipelineIndex()
+//	} else {
+//		// kill existing retry goroutine when pipeline fails again
+//		if f.inRetry {
+//			f.done <- true
+//		}
+//		// Need to adjust to ensure it keeps retrying, possibly use ticker instead
+//		time.AfterFunc(f.retryInterval-f.retryGap, f.retryHighPriorityPipelines)
+//		f.nextPipeline()
+//	}
+//
+//}
+
+//func (f *failoverRouter[C]) nextPipeline() {
+//
+//	f.indexLock.Lock()
+//
+//	for ok := true; ok; ok = f.pipelineRetries[f.index] < f.cfg.MaxRetry {
+//		f.index++
+//	}
+//	f.stableIndex = f.index
+//
+//	f.indexLock.Unlock()
 //}
