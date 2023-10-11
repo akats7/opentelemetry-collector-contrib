@@ -122,7 +122,7 @@ type pipelineSelector struct {
 
 func (p *pipelineSelector) nextPipeline() {
 	p.lock.Lock()
-	for ok := true; ok; ok = p.pipelineRetries[p.currentIndex] < p.maxRetry {
+	for ok := true; ok; ok = p.pipelineRetries[p.currentIndex] >= p.maxRetry {
 		p.currentIndex++
 	}
 	p.stableIndex = p.currentIndex
