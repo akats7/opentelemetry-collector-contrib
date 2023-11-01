@@ -31,23 +31,23 @@ If you are not already familiar with connectors, you may find it helpful to firs
 
 The following settings are available:
 
-- `priority (required)`: list of pipeline level priorities in a 1 - n configuration, multiple pipelines can sit at a single priority level.
-- `retry_interval (required)`: the frequency at which the pipeline levels will attempt to reestablish connection with all higher priority levels
-- `retry_gap (required)`: the amount of time between trying two separate priority levels in a single retry_interval timeframe
-- `max_retry (required)`: the maximum retries per level
+- `priority_levels (required)`: list of pipeline level priorities in a 1 - n configuration, multiple pipelines can sit at a single priority level.
+- `retry_interval (optional)`: the frequency at which the pipeline levels will attempt to reestablish connection with all higher priority levels. Default value is 10 minutes.
+- `retry_gap (optional)`: the amount of time between trying two separate priority levels in a single retry_interval timeframe. Default value is 30 seconds.
+- `max_retries (optional)`: the maximum retries per level. Default value is 10.
 
 Example:
 
 ```yaml
 connectors:
   failover:
-    priority:
-      - [traces/first, traces/fourth]
+    priority_levels:
+      - [traces/first, traces/also_first]
       - [traces/second]
       - [traces/third]
-    retry_pipeline_interval: 5m
+    retry_interval: 5m
     retry_gap: 1m
-    max_retry: 10
+    max_retries: 10
 
 service:
   pipelines:
@@ -63,15 +63,15 @@ service:
     traces/third:
       receivers: [failover]
       exporters: [otlp/third]
-    traces/fourth:
+    traces/also_first:
       receivers: [failover]
       exporters: [otlp/fourth]
 ```
 
-The connector intakes a list of 'levels' each of which can contain multiple pipelines. If any pipeline at a stable level fails, the level is considered unhealthy and the connector will move down one priority level and route all data to the new level (assuming it is stable).
+The connector intakes a list of `priority_levels` each of which can contain multiple pipelines. If any pipeline at a stable level fails, the level is considered unhealthy and the connector will move down one priority level and route all data to the new level (assuming it is stable).
 
-The connector will periodically try to reestablish a stable connection with the higher priority levels. RetryInterval will be the frequency at which the connector will try to iterate through all unhealthy higher priority levels while retryGap is how long it will wait after a failed retry at one level before retrying the next level (if retry gap is 2m, after trying to reestablish level 1, it will wait 2m before trying level 2) It will retry a maximum of one unhealthy level before returning to the current stable level.)
-There is a max_retries config param as well that will track how many retries have occurred at each level, and once the max is hit, it will no longer retry that priority level.
+The connector will periodically try to reestablish a stable connection with the higher priority levels. `retry_interval` will be the frequency at which the connector will try to iterate through all unhealthy higher priority levels while `retry_gap` is how long it will wait after a failed retry at one level before retrying the next level (if retry_gap is 2m, after trying to reestablish level 1, it will wait 2m before trying level 2) It will retry a maximum of one unhealthy level before returning to the current stable level.)
+There is a `max_retries` config param as well that will track how many retries have occurred at each level, and once the max is hit, it will no longer retry that priority level.
 
 [Connectors README]:https://github.com/open-telemetry/opentelemetry-collector/blob/main/connector/README.md
 [Exporter Pipeline Type]:https://github.com/open-telemetry/opentelemetry-collector/blob/main/connector/README.md#exporter-pipeline-type

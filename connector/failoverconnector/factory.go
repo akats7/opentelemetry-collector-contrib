@@ -25,10 +25,11 @@ func NewFactory() connector.Factory {
 	)
 }
 
-func createDefaultConfig() component.Config { // LOOK INTO THIS
+func createDefaultConfig() component.Config {
 	return &Config{
-		RetryGap:      time.Minute,
-		RetryInterval: 15 * time.Minute,
+		RetryGap:      30 * time.Second,
+		RetryInterval: 10 * time.Minute,
+		MaxRetries:    10,
 	}
 }
 
