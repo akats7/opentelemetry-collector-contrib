@@ -5,8 +5,9 @@ package failoverconnector // import "failoverconnector"
 
 import (
 	"errors"
-	"go.opentelemetry.io/collector/component"
 	"time"
+
+	"go.opentelemetry.io/collector/component"
 )
 
 var (

@@ -5,12 +5,13 @@ package failoverconnector
 
 import (
 	"context"
+	"testing"
+	"time"
+
 	"github.com/stretchr/testify/assert"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector/connectortest"
 	"go.opentelemetry.io/collector/consumer"
-	"testing"
-	"time"
 )
 
 func TestNewFactory(t *testing.T) {

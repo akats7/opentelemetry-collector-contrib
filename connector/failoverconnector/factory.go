@@ -5,10 +5,11 @@ package failoverconnector // import "failoverconnector"
 
 import (
 	"context"
+	"time"
+
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/consumer"
-	"time"
 )
 
 const (

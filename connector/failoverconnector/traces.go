@@ -6,6 +6,7 @@ package failoverconnector // import "failoverconnector"
 import (
 	"context"
 	"errors"
+
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/consumer"
@@ -27,11 +28,11 @@ func (f *tracesFailover) Capabilities() consumer.Capabilities {
 }
 
 // ConsumeTraces will try to export to the current set priority level and handle failover in the case of an error
-func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
+func (f *tracesFailover) ConsumeTraces(_ context.Context, _ ptrace.Traces) error {
 	return nil
 }
 
-func (f *tracesFailover) Shutdown(ctx context.Context) error {
+func (f *tracesFailover) Shutdown(_ context.Context) error {
 	return nil
 }
 
@@ -42,7 +43,7 @@ func newTracesToTraces(set connector.CreateSettings, cfg component.Config, trace
 		return nil, errors.New("consumer is not of type TracesRouter")
 	}
 
-	failover := newFailoverRouter(tr.Consumer, config)
+	failover := newFailoverRouter[consumer.Traces](tr.Consumer, config) // temp add type spec to resolve linter issues
 	return &tracesFailover{
 		config:   config,
 		failover: failover,
