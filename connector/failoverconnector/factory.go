@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-package failoverconnector // import "failoverconnector"
+package failoverconnector // import "github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector"
 
 import (
 	"context"
@@ -10,22 +10,17 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/consumer"
-)
 
-const (
-	Type             = "failover"
-	TracesStability  = component.StabilityLevelDevelopment
-	MetricsStability = component.StabilityLevelDevelopment
-	LogsStability    = component.StabilityLevelDevelopment
+	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector/internal/metadata"
 )
 
 func NewFactory() connector.Factory {
 	return connector.NewFactory(
-		Type,
+		metadata.Type,
 		createDefaultConfig,
-		connector.WithTracesToTraces(createTracesToTraces, TracesStability),
-		connector.WithMetricsToMetrics(createMetricsToMetrics, MetricsStability),
-		connector.WithLogsToLogs(createLogsToLogs, LogsStability),
+		connector.WithTracesToTraces(createTracesToTraces, metadata.TracesToTracesStability),
+		connector.WithMetricsToMetrics(createMetricsToMetrics, metadata.MetricsToMetricsStability),
+		connector.WithLogsToLogs(createLogsToLogs, metadata.LogsToLogsStability),
 	)
 }
 
