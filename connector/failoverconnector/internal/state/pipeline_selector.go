@@ -5,6 +5,7 @@ package state // import "github.com/open-telemetry/opentelemetry-collector-contr
 
 import (
 	"context"
+	"fmt"
 	"reflect"
 	"sync/atomic"
 	"time"
@@ -135,6 +136,7 @@ func (p *PipelineSelector) maxRetriesUsed(idx int) bool {
 
 // SetNewStableIndex Update stableIndex to the passed stable index
 func (p *PipelineSelector) setNewStableIndex(idx int) {
+	fmt.Printf("stable idx: %v\n", idx)
 	p.resetRetryCount(idx)
 	p.newStableIndex <- idx
 }
@@ -223,6 +225,7 @@ func (p *PipelineSelector) ListenToChannels(done chan struct{}) {
 			return
 		}
 		if value.Bool() {
+			fmt.Printf("reportStable: %v\n", chosen)
 			p.stableTryLock.TryExecute(p.reportStable, chosen)
 		} else {
 			p.errTryLock.TryExecute(p.handlePipelineError, chosen)
@@ -246,4 +249,8 @@ func (p *PipelineSelector) ChannelIndex(ch chan bool) int {
 		}
 	}
 	return -1
+}
+
+func (p *PipelineSelector) TestStableIndex() int {
+	return p.loadStable()
 }

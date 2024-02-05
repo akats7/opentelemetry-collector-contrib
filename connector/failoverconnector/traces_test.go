@@ -5,6 +5,7 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 import (
 	"context"
 	"errors"
+	"fmt"
 	"testing"
 	"time"
 
@@ -140,13 +141,13 @@ func TestTracesWithFailoverError(t *testing.T) {
 }
 
 func TestTracesWithFailoverRecovery(t *testing.T) {
-	t.Skip("Flaky Test - See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/31005")
-	var sinkSecond, sinkThird consumertest.TracesSink
+	//t.Skip("Flaky Test - See https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/31005")
+	var sinkFirst, sinkSecond, sinkThird consumertest.TracesSink
 	tracesFirst := component.NewIDWithName(component.DataTypeTraces, "traces/first")
 	tracesSecond := component.NewIDWithName(component.DataTypeTraces, "traces/second")
 	tracesThird := component.NewIDWithName(component.DataTypeTraces, "traces/third")
-	noOp := consumertest.NewNop()
-
+	//noOp := consumertest.NewNop()
+	fmt.Println("Hi")
 	cfg := &Config{
 		PipelinePriority: [][]component.ID{{tracesFirst}, {tracesSecond}, {tracesThird}},
 		RetryInterval:    50 * time.Millisecond,
@@ -155,7 +156,7 @@ func TestTracesWithFailoverRecovery(t *testing.T) {
 	}
 
 	router := connector.NewTracesRouter(map[component.ID]consumer.Traces{
-		tracesFirst:  noOp,
+		tracesFirst:  &sinkFirst,
 		tracesSecond: &sinkSecond,
 		tracesThird:  &sinkThird,
 	})
@@ -181,11 +182,17 @@ func TestTracesWithFailoverRecovery(t *testing.T) {
 	require.Equal(t, idx, 1)
 
 	// Simulate recovery of exporter
-	failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewNop())
+	failoverConnector.failover.ModifyConsumerAtIndex(0, &sinkFirst)
+	//require.NoError(t, conn.ConsumeTraces(context.Background(), tr))
 
 	require.Eventually(t, func() bool {
+		conn.ConsumeTraces(context.Background(), tr)
 		_, ch, ok = failoverConnector.failover.getCurrentConsumer()
 		idx = failoverConnector.failover.pS.ChannelIndex(ch)
+		fmt.Println("_______")
+		fmt.Printf("ok: %v\n", ok)
+		fmt.Printf("idx val: %v\n", idx)
+		fmt.Println("_______")
 		return ok && idx == 0
 	}, 3*time.Second, 100*time.Millisecond)
 }

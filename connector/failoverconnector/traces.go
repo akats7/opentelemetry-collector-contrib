@@ -6,6 +6,7 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
@@ -35,8 +36,10 @@ func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) er
 	if !ok {
 		return errNoValidPipeline
 	}
+	fmt.Printf("Calling Consume\n")
 	err := tc.ConsumeTraces(ctx, td)
 	if err == nil {
+		fmt.Println("No errors in Consume")
 		ch <- true
 		return nil
 	}
@@ -45,6 +48,7 @@ func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) er
 
 // FailoverTraces is the function responsible for handling errors returned by the nextConsumer
 func (f *tracesFailover) FailoverTraces(ctx context.Context, td ptrace.Traces) error {
+	fmt.Println("FailoverTraces")
 	for tc, ch, ok := f.failover.getCurrentConsumer(); ok; tc, ch, ok = f.failover.getCurrentConsumer() {
 		err := tc.ConsumeTraces(ctx, td)
 		if err != nil {
