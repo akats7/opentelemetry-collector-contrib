@@ -32,7 +32,7 @@ func newFailoverRouter[C any](provider consumerProvider[C], cfg *Config, done ch
 		MaxRetries:    cfg.MaxRetries,
 	}
 
-	selector := state.NewPipelineSelector(len(cfg.PipelinePriority), pSConstants)
+	selector := state.NewPipelineSelector(len(cfg.PipelinePriority), pSConstants, done)
 	selector.Start(done)
 	return &failoverRouter[C]{
 		consumerProvider: provider,
@@ -75,3 +75,7 @@ func (f *failoverRouter[C]) GetConsumerAtIndex(idx int) C {
 func (f *failoverRouter[C]) ModifyConsumerAtIndex(idx int, c C) {
 	f.consumers[idx] = c
 }
+
+//func (f *failoverRouter[C]) getCurrentIndex() int {
+//	return f.pS.TestCurrentIndex()
+//}
