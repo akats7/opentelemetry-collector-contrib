@@ -288,3 +288,7 @@ func (p *PipelineSelector) TestSetStableIndex(idx int32) {
 func (p *PipelineSelector) SetRetryCountToMax(idx int) {
 	p.pipelineRetries[idx].Store(int32(p.constants.MaxRetries))
 }
+
+func (p *PipelineSelector) ResetRetryCountToMax(idx int) {
+	p.pipelineRetries[idx].Store(0)
+}

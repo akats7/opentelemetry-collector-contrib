@@ -222,9 +222,9 @@ func TestTracesWithRecovery(t *testing.T) {
 		failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewErr(errTracesConsumer))
 		failoverConnector.failover.ModifyConsumerAtIndex(1, consumertest.NewErr(errTracesConsumer))
 
-		require.NoError(t, conn.ConsumeTraces(context.Background(), tr))
-		idx := failoverConnector.failover.pS.TestStableIndex()
-		require.Equal(t, idx, 2)
+		require.Eventually(t, func() bool {
+			return ConsumeCheckStable(failoverConnector, 2, tr)
+		}, 3*time.Second, 10*time.Millisecond)
 
 		// Simulate recovery of exporter
 		failoverConnector.failover.ModifyConsumerAtIndex(1, &sinkSecond)
@@ -260,9 +260,9 @@ func TestTracesWithRecovery(t *testing.T) {
 		failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewErr(errTracesConsumer))
 		failoverConnector.failover.ModifyConsumerAtIndex(1, consumertest.NewErr(errTracesConsumer))
 
-		require.NoError(t, conn.ConsumeTraces(context.Background(), tr))
-		idx := failoverConnector.failover.pS.TestStableIndex()
-		require.Equal(t, idx, 2)
+		require.Eventually(t, func() bool {
+			return ConsumeCheckStable(failoverConnector, 2, tr)
+		}, 3*time.Second, 10*time.Millisecond)
 
 		failoverConnector.failover.ModifyConsumerAtIndex(0, &sinkSecond)
 		failoverConnector.failover.ModifyConsumerAtIndex(1, &sinkSecond)
@@ -275,9 +275,9 @@ func TestTracesWithRecovery(t *testing.T) {
 		failoverConnector.failover.ModifyConsumerAtIndex(1, consumertest.NewErr(errTracesConsumer))
 		failoverConnector.failover.pS.SetRetryCountToMax(0)
 
-		require.NoError(t, conn.ConsumeTraces(context.Background(), tr))
-		idx = failoverConnector.failover.pS.TestStableIndex()
-		require.Equal(t, idx, 2)
+		require.Eventually(t, func() bool {
+			return ConsumeCheckStable(failoverConnector, 2, tr)
+		}, 3*time.Second, 10*time.Millisecond)
 
 		failoverConnector.failover.ModifyConsumerAtIndex(0, &sinkSecond)
 		failoverConnector.failover.ModifyConsumerAtIndex(1, &sinkSecond)
@@ -496,9 +496,9 @@ func TestTracesWithMaxRetriesRecovery(t *testing.T) {
 	failoverConnector.failover.ModifyConsumerAtIndex(1, consumertest.NewErr(errTracesConsumer))
 	failoverConnector.failover.pS.SetRetryCountToMax(0)
 
-	require.NoError(t, conn.ConsumeTraces(context.Background(), tr))
-	idx = failoverConnector.failover.pS.TestStableIndex()
-	require.Equal(t, idx, 2)
+	require.Eventually(t, func() bool {
+		return ConsumeCheckStable(failoverConnector, 2, tr)
+	}, 3*time.Second, 10*time.Millisecond)
 
 	failoverConnector.failover.ModifyConsumerAtIndex(0, &sinkSecond)
 	failoverConnector.failover.ModifyConsumerAtIndex(1, &sinkSecond)
