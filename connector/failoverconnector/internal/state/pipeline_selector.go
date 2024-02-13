@@ -18,11 +18,9 @@ type PipelineSelector struct {
 	constants       PSConstants
 	RS              *RetryState
 
-	errTryLock     *TryLock
-	stableTryLock  *TryLock
-	chans          []chan bool
-	nextIndex      chan int
-	newStableIndex chan int
+	errTryLock    *TryLock
+	stableTryLock *TryLock
+	chans         []chan bool
 
 	done chan struct{}
 }
@@ -214,29 +212,13 @@ func NewPipelineSelector(lenPriority int, consts PSConstants, done chan struct{}
 		errTryLock:      NewTryLock(),
 		stableTryLock:   NewTryLock(),
 		chans:           chans,
-		nextIndex:       make(chan int),
-		newStableIndex:  make(chan int),
 		done:            done,
 	}
 	return ps
 }
 
 func (p *PipelineSelector) Start(done chan struct{}) {
-	//go p.ManageIndexes(done)
 	go p.ListenToChannels(done)
-}
-
-func (p *PipelineSelector) ManageIndexes(done chan struct{}) {
-	for {
-		select {
-		case <-done:
-			return
-		case idx := <-p.nextIndex:
-			p.currentIndex.Store(int32(idx))
-		case idx := <-p.newStableIndex:
-			p.stableIndex.Store(int32(idx))
-		}
-	}
 }
 
 func (p *PipelineSelector) ListenToChannels(done chan struct{}) {

@@ -75,7 +75,3 @@ func (f *failoverRouter[C]) GetConsumerAtIndex(idx int) C {
 func (f *failoverRouter[C]) ModifyConsumerAtIndex(idx int, c C) {
 	f.consumers[idx] = c
 }
-
-//func (f *failoverRouter[C]) getCurrentIndex() int {
-//	return f.pS.TestCurrentIndex()
-//}
