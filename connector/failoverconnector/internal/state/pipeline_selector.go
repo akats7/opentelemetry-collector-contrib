@@ -81,11 +81,8 @@ func (p *PipelineSelector) setToNextPriorityPipeline(idx int) {
 	for ok := true; ok; ok = p.exceededMaxRetries(idx) {
 		idx++
 	}
-	//p.newStableIndex <- idx
 	p.stableIndex.Store(int32(idx))
 	p.currentIndex.Store(int32(idx))
-	//p.sender(idx, p.newStableIndex)
-	//p.sender(idx, p.nextIndex)
 }
 
 // RetryHighPriorityPipelines responsible for single iteration through all higher priority pipelines
@@ -106,8 +103,6 @@ func (p *PipelineSelector) retryHighPriorityPipelines(ctx context.Context, retry
 		case <-ctx.Done():
 			return
 		case <-ticker.C:
-			//p.nextIndex <- i
-			//p.sender(i, p.nextIndex)
 			p.currentIndex.Store(int32(i))
 		}
 	}
@@ -130,8 +125,6 @@ func (p *PipelineSelector) exceededMaxRetries(idx int) bool {
 // SetToStableIndex returns the CurrentIndex to the known Stable Index
 func (p *PipelineSelector) setToStableIndex(idx int) {
 	p.incrementRetryCount(idx)
-	//p.nextIndex <- p.loadStable()
-	//p.sender(p.loadStable(), p.nextIndex)
 	p.currentIndex.Store(p.stableIndex.Load())
 }
 
@@ -143,8 +136,6 @@ func (p *PipelineSelector) maxRetriesUsed(idx int) bool {
 // SetNewStableIndex Update stableIndex to the passed stable index
 func (p *PipelineSelector) setNewStableIndex(idx int) {
 	p.resetRetryCount(idx)
-	//p.newStableIndex <- idx
-	//p.sender(idx, p.newStableIndex)
 	p.stableIndex.Store(int32(idx))
 }
 
@@ -180,23 +171,6 @@ func (p *PipelineSelector) reportStable(idx int) {
 	}
 	p.setNewStableIndex(idx)
 }
-
-// ReportStable reports back to the failoverRouter that the current priority was stable
-//func (p *PipelineSelector) sender(idx int, ch chan int) {
-//	select {
-//	case <-p.done:
-//		return
-//	default:
-//	}
-//	ch <- idx
-//
-//	//select {
-//	//case ch <- idx:
-//	//	// Sent successfully
-//	//default:
-//	//	// Handle the case when the channel is not ready to receive (e.g., log, retry, or drop)
-//	//}
-//}
 
 func NewPipelineSelector(lenPriority int, consts PSConstants, done chan struct{}) *PipelineSelector {
 	chans := make([]chan bool, lenPriority)
