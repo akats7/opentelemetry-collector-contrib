@@ -6,12 +6,15 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.uber.org/zap"
+
+	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector/internal"
 )
 
 type tracesFailover struct {
@@ -29,31 +32,33 @@ func (f *tracesFailover) Capabilities() consumer.Capabilities {
 
 // ConsumeTraces will try to export to the current set priority level and handle failover in the case of an error
 func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
-	tc, ch, ok := f.failover.getCurrentConsumer()
-	if !ok {
-		return errNoValidPipeline
+	select {
+	case <-f.failover.notifyRetry:
+		fmt.Println("in traces")
+		ok := f.failover.sampleRetryConsumers(ctx, td)
+		if !ok {
+			return f.consumeByHealthyPipeline(ctx, td)
+		} else {
+			return nil
+		}
+	default:
+		return f.consumeByHealthyPipeline(ctx, td)
 	}
-	err := tc.ConsumeTraces(ctx, td)
-	if err == nil {
-		ch <- true
-		return nil
-	}
-	return f.FailoverTraces(ctx, td)
 }
 
-// FailoverTraces is the function responsible for handling errors returned by the nextConsumer
-func (f *tracesFailover) FailoverTraces(ctx context.Context, td ptrace.Traces) error {
-	for tc, ch, ok := f.failover.getCurrentConsumer(); ok; tc, ch, ok = f.failover.getCurrentConsumer() {
-		err := tc.ConsumeTraces(ctx, td)
-		if err != nil {
-			ch <- false
-			continue
+func (f *tracesFailover) consumeByHealthyPipeline(ctx context.Context, td ptrace.Traces) error {
+	for {
+		tc, idx := f.failover.getCurrentConsumer()
+		if idx >= len(f.config.PipelinePriority) {
+			return errNoValidPipeline
 		}
-		ch <- true
-		return nil
+		err := tc.Consume(ctx, td)
+		if err != nil {
+			f.failover.reportConsumerError(idx)
+		} else {
+			return nil
+		}
 	}
-	f.logger.Error("All provided pipelines return errors, dropping data")
-	return errNoValidPipeline
 }
 
 func (f *tracesFailover) Shutdown(_ context.Context) error {
@@ -71,7 +76,7 @@ func newTracesToTraces(set connector.Settings, cfg component.Config, traces cons
 	}
 
 	failover := newFailoverRouter[consumer.Traces](tr.Consumer, config)
-	err := failover.registerConsumers()
+	err := failover.registerConsumers(wrapTraces)
 	if err != nil {
 		return nil, err
 	}
@@ -81,4 +86,8 @@ func newTracesToTraces(set connector.Settings, cfg component.Config, traces cons
 		failover: failover,
 		logger:   set.TelemetrySettings.Logger,
 	}, nil
+}
+
+func wrapTraces(c consumer.Traces) internal.SignalConsumer {
+	return internal.NewTracesWrapper(c)
 }

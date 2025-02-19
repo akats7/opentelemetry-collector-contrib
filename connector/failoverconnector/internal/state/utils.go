@@ -5,9 +5,12 @@ package state // import "github.com/open-telemetry/opentelemetry-collector-contr
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 )
+
+var errConsumeType = errors.New("Error in consume type assertion")
 
 type PSConstants struct {
 	RetryInterval time.Duration
@@ -28,6 +31,20 @@ func (t *TryLock) TryExecute(fn func(int), arg int) {
 
 func NewTryLock() *TryLock {
 	return &TryLock{}
+}
+
+type CancelManager struct {
+	cancelFunc context.CancelFunc
+}
+
+func (c *CancelManager) Cancel() {
+	if c.cancelFunc != nil {
+		c.cancelFunc()
+	}
+}
+
+func (c *CancelManager) UpdateFn(cancelFunc context.CancelFunc) {
+	c.cancelFunc = cancelFunc
 }
 
 // Manages cancel function for retry goroutine, ends up cleaner than using channels

@@ -5,9 +5,7 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 import (
 	"context"
 	"errors"
-	"testing"
-	"time"
-
+	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector/internal"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.opentelemetry.io/collector/connector"
@@ -16,6 +14,8 @@ import (
 	"go.opentelemetry.io/collector/consumer/consumertest"
 	"go.opentelemetry.io/collector/pdata/ptrace"
 	"go.opentelemetry.io/collector/pipeline"
+	"testing"
+	"time"
 )
 
 var errTracesConsumer = errors.New("Error from ConsumeTraces")
@@ -50,14 +50,13 @@ func TestTracesRegisterConsumers(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, conn)
 
-	tc, _, ok := failoverConnector.failover.getCurrentConsumer()
+	tc := failoverConnector.failover.getConsumerAtIndex(0)
 	tc1 := failoverConnector.failover.GetConsumerAtIndex(1)
 	tc2 := failoverConnector.failover.GetConsumerAtIndex(2)
 
-	assert.True(t, ok)
-	require.Implements(t, (*consumer.Traces)(nil), tc)
-	require.Implements(t, (*consumer.Traces)(nil), tc1)
-	require.Implements(t, (*consumer.Traces)(nil), tc2)
+	require.Implements(t, (*internal.SignalConsumer)(nil), tc)
+	require.Implements(t, (*internal.SignalConsumer)(nil), tc1)
+	require.Implements(t, (*internal.SignalConsumer)(nil), tc2)
 }
 
 func TestTracesWithValidFailover(t *testing.T) {
@@ -87,7 +86,7 @@ func TestTracesWithValidFailover(t *testing.T) {
 	require.NoError(t, err)
 
 	failoverConnector := conn.(*tracesFailover)
-	failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewErr(errTracesConsumer))
+	failoverConnector.failover.ModifyConsumerAtIndex(0, testWrapTraces, consumertest.NewErr(errTracesConsumer))
 	defer func() {
 		assert.NoError(t, failoverConnector.Shutdown(context.Background()))
 	}()
@@ -125,9 +124,9 @@ func TestTracesWithFailoverError(t *testing.T) {
 	require.NoError(t, err)
 
 	failoverConnector := conn.(*tracesFailover)
-	failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewErr(errTracesConsumer))
-	failoverConnector.failover.ModifyConsumerAtIndex(1, consumertest.NewErr(errTracesConsumer))
-	failoverConnector.failover.ModifyConsumerAtIndex(2, consumertest.NewErr(errTracesConsumer))
+	failoverConnector.failover.ModifyConsumerAtIndex(0, testWrapTraces, consumertest.NewErr(errTracesConsumer))
+	failoverConnector.failover.ModifyConsumerAtIndex(1, testWrapTraces, consumertest.NewErr(errTracesConsumer))
+	failoverConnector.failover.ModifyConsumerAtIndex(2, testWrapTraces, consumertest.NewErr(errTracesConsumer))
 	defer func() {
 		assert.NoError(t, failoverConnector.Shutdown(context.Background()))
 	}()
@@ -136,17 +135,10 @@ func TestTracesWithFailoverError(t *testing.T) {
 
 	assert.EqualError(t, conn.ConsumeTraces(context.Background(), tr), "All provided pipelines return errors")
 }
-
 func consumeTracesAndCheckStable(conn *tracesFailover, idx int, tr ptrace.Traces) bool {
 	_ = conn.ConsumeTraces(context.Background(), tr)
-	stableIndex := conn.failover.pS.TestStableIndex()
+	stableIndex := conn.failover.pS.CurrentPipeline()
 	return stableIndex == idx
-}
-
-func consumeTracesAndCheckCurrent(conn *tracesFailover, idx int, tr ptrace.Traces) bool {
-	_ = conn.ConsumeTraces(context.Background(), tr)
-	currentIndex := conn.failover.pS.TestCurrentIndex()
-	return currentIndex == idx
 }
 
 func sampleTrace() ptrace.Traces {
