@@ -4,7 +4,6 @@
 package failoverconnector // import "github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector"
 import (
 	"context"
-	"github.com/open-telemetry/opentelemetry-collector-contrib/connector/failoverconnector/internal"
 	"testing"
 	"time"
 
@@ -27,8 +26,6 @@ func TestFailoverRecovery(t *testing.T) {
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{tracesFirst}, {tracesSecond}, {tracesThird}, {tracesFourth}},
 		RetryInterval:    50 * time.Millisecond,
-		RetryGap:         10 * time.Millisecond,
-		MaxRetries:       10000,
 	}
 
 	router := connector.NewTracesRouter(map[pipeline.ID]consumer.Traces{
@@ -67,7 +64,7 @@ func TestFailoverRecovery(t *testing.T) {
 			return consumeTracesAndCheckStable(failoverConnector, 0, tr)
 		}, 3*time.Second, 5*time.Millisecond)
 	})
-	
+
 	t.Run("double failover recovery: level 3 -> 2 -> 1", func(t *testing.T) {
 		defer func() {
 			resetConsumers(failoverConnector, &sinkFirst, &sinkSecond, &sinkThird, &sinkFourth)
@@ -137,8 +134,4 @@ func resetConsumers(conn *tracesFailover, consumers ...consumer.Traces) {
 		conn.failover.ModifyConsumerAtIndex(i, testWrapTraces, sink)
 	}
 	conn.failover.TestSetStableConsumerIndex(0)
-}
-
-func testWrapTraces(c consumer.Traces) internal.SignalConsumer {
-	return internal.NewTracesWrapper(c)
 }

@@ -6,8 +6,6 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 import (
 	"context"
 	"errors"
-	"fmt"
-
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
 	"go.opentelemetry.io/collector/consumer"
@@ -30,35 +28,8 @@ func (f *tracesFailover) Capabilities() consumer.Capabilities {
 	return consumer.Capabilities{MutatesData: false}
 }
 
-// ConsumeTraces will try to export to the current set priority level and handle failover in the case of an error
 func (f *tracesFailover) ConsumeTraces(ctx context.Context, td ptrace.Traces) error {
-	select {
-	case <-f.failover.notifyRetry:
-		fmt.Println("in traces")
-		ok := f.failover.sampleRetryConsumers(ctx, td)
-		if !ok {
-			return f.consumeByHealthyPipeline(ctx, td)
-		} else {
-			return nil
-		}
-	default:
-		return f.consumeByHealthyPipeline(ctx, td)
-	}
-}
-
-func (f *tracesFailover) consumeByHealthyPipeline(ctx context.Context, td ptrace.Traces) error {
-	for {
-		tc, idx := f.failover.getCurrentConsumer()
-		if idx >= len(f.config.PipelinePriority) {
-			return errNoValidPipeline
-		}
-		err := tc.Consume(ctx, td)
-		if err != nil {
-			f.failover.reportConsumerError(idx)
-		} else {
-			return nil
-		}
-	}
+	return f.failover.Consume(ctx, td)
 }
 
 func (f *tracesFailover) Shutdown(_ context.Context) error {

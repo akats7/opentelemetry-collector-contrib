@@ -16,8 +16,6 @@ func TestSelectPipeline(t *testing.T) {
 	retryChan := make(chan struct{}, 1)
 	constants := PSConstants{
 		RetryInterval: 50 * time.Millisecond,
-		RetryGap:      10 * time.Millisecond,
-		MaxRetries:    1000,
 	}
 	pS := NewPipelineSelector(retryChan, done, constants)
 
@@ -32,8 +30,6 @@ func TestHandlePipelineError(t *testing.T) {
 	retryChan := make(chan struct{}, 1)
 	constants := PSConstants{
 		RetryInterval: 50 * time.Millisecond,
-		RetryGap:      10 * time.Millisecond,
-		MaxRetries:    1000,
 	}
 	pS := NewPipelineSelector(retryChan, done, constants)
 
@@ -58,8 +54,6 @@ func TestCurrentPipelineWithReset(t *testing.T) {
 	retryChan := make(chan struct{}, 1)
 	constants := PSConstants{
 		RetryInterval: 50 * time.Millisecond,
-		RetryGap:      10 * time.Millisecond,
-		MaxRetries:    1000,
 	}
 	pS := NewPipelineSelector(retryChan, done, constants)
 

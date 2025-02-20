@@ -31,8 +31,6 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				RetryInterval: 10 * time.Minute,
-				RetryGap:      30 * time.Second,
-				MaxRetries:    10,
 			},
 		},
 		{
@@ -54,8 +52,6 @@ func TestLoadConfig(t *testing.T) {
 					},
 				},
 				RetryInterval: 5 * time.Minute,
-				RetryGap:      time.Minute,
-				MaxRetries:    10,
 			},
 		},
 	}
@@ -90,7 +86,7 @@ func TestValidateConfig(t *testing.T) {
 			err:  errNoPipelinePriority,
 		},
 		{
-			name: "invalid ratio of retry_gap to retry_interval",
+			name: "invalid retry_interval",
 			id:   component.NewIDWithName(metadata.Type, "invalid"),
 			err:  errInvalidRetryIntervals,
 		},

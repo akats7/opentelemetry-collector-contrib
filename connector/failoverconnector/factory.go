@@ -19,16 +19,16 @@ func NewFactory() connector.Factory {
 		metadata.Type,
 		createDefaultConfig,
 		connector.WithTracesToTraces(createTracesToTraces, metadata.TracesToTracesStability),
-		//connector.WithMetricsToMetrics(createMetricsToMetrics, metadata.MetricsToMetricsStability),
-		//connector.WithLogsToLogs(createLogsToLogs, metadata.LogsToLogsStability),
+		connector.WithMetricsToMetrics(createMetricsToMetrics, metadata.MetricsToMetricsStability),
+		connector.WithLogsToLogs(createLogsToLogs, metadata.LogsToLogsStability),
 	)
 }
 
 func createDefaultConfig() component.Config {
 	return &Config{
-		RetryGap:      30 * time.Second,
 		RetryInterval: 10 * time.Minute,
-		MaxRetries:    10,
+		RetryGap:      0,
+		MaxRetries:    0,
 	}
 }
 
@@ -41,20 +41,20 @@ func createTracesToTraces(
 	return newTracesToTraces(set, cfg, traces)
 }
 
-//func createMetricsToMetrics(
-//	_ context.Context,
-//	set connector.Settings,
-//	cfg component.Config,
-//	metrics consumer.Metrics,
-//) (connector.Metrics, error) {
-//	return newMetricsToMetrics(set, cfg, metrics)
-//}
-//
-//func createLogsToLogs(
-//	_ context.Context,
-//	set connector.Settings,
-//	cfg component.Config,
-//	logs consumer.Logs,
-//) (connector.Logs, error) {
-//	return newLogsToLogs(set, cfg, logs)
-//}
+func createMetricsToMetrics(
+	_ context.Context,
+	set connector.Settings,
+	cfg component.Config,
+	metrics consumer.Metrics,
+) (connector.Metrics, error) {
+	return newMetricsToMetrics(set, cfg, metrics)
+}
+
+func createLogsToLogs(
+	_ context.Context,
+	set connector.Settings,
+	cfg component.Config,
+	logs consumer.Logs,
+) (connector.Logs, error) {
+	return newLogsToLogs(set, cfg, logs)
+}

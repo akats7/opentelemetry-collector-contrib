@@ -29,8 +29,6 @@ func TestTracesRegisterConsumers(t *testing.T) {
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{tracesFirst}, {tracesSecond}, {tracesThird}},
 		RetryInterval:    25 * time.Millisecond,
-		RetryGap:         5 * time.Millisecond,
-		MaxRetries:       10000,
 	}
 
 	router := connector.NewTracesRouter(map[pipeline.ID]consumer.Traces{
@@ -51,8 +49,8 @@ func TestTracesRegisterConsumers(t *testing.T) {
 	require.NotNil(t, conn)
 
 	tc := failoverConnector.failover.getConsumerAtIndex(0)
-	tc1 := failoverConnector.failover.GetConsumerAtIndex(1)
-	tc2 := failoverConnector.failover.GetConsumerAtIndex(2)
+	tc1 := failoverConnector.failover.TestGetConsumerAtIndex(1)
+	tc2 := failoverConnector.failover.TestGetConsumerAtIndex(2)
 
 	require.Implements(t, (*internal.SignalConsumer)(nil), tc)
 	require.Implements(t, (*internal.SignalConsumer)(nil), tc1)
@@ -70,8 +68,6 @@ func TestTracesWithValidFailover(t *testing.T) {
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{tracesFirst}, {tracesSecond}, {tracesThird}},
 		RetryInterval:    50 * time.Millisecond,
-		RetryGap:         10 * time.Millisecond,
-		MaxRetries:       10000,
 	}
 
 	router := connector.NewTracesRouter(map[pipeline.ID]consumer.Traces{
@@ -108,8 +104,6 @@ func TestTracesWithFailoverError(t *testing.T) {
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{tracesFirst}, {tracesSecond}, {tracesThird}},
 		RetryInterval:    50 * time.Millisecond,
-		RetryGap:         10 * time.Millisecond,
-		MaxRetries:       10000,
 	}
 
 	router := connector.NewTracesRouter(map[pipeline.ID]consumer.Traces{
@@ -148,4 +142,8 @@ func sampleTrace() ptrace.Traces {
 	span := rl.ScopeSpans().AppendEmpty().Spans().AppendEmpty()
 	span.SetName("SampleSpan")
 	return tr
+}
+
+func testWrapTraces(c consumer.Traces) internal.SignalConsumer {
+	return internal.NewTracesWrapper(c)
 }
