@@ -12,6 +12,7 @@ require (
 	go.opentelemetry.io/collector/connector/connectortest v0.122.2-0.20250319144947-41a9ea7f7402
 	go.opentelemetry.io/collector/consumer v1.28.2-0.20250319144947-41a9ea7f7402
 	go.opentelemetry.io/collector/consumer/consumertest v0.122.2-0.20250319144947-41a9ea7f7402
+	go.opentelemetry.io/collector/exporter v0.122.1
 	go.opentelemetry.io/collector/pdata v1.28.2-0.20250319144947-41a9ea7f7402
 	go.opentelemetry.io/collector/pipeline v0.122.2-0.20250319144947-41a9ea7f7402
 	go.uber.org/goleak v1.3.0
@@ -19,6 +20,7 @@ require (
 )
 
 require (
+	github.com/cenkalti/backoff/v5 v5.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
@@ -36,8 +38,12 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	go.opentelemetry.io/auto/sdk v1.1.0 // indirect
+	go.opentelemetry.io/collector/config/configretry v1.28.1 // indirect
 	go.opentelemetry.io/collector/connector/xconnector v0.122.2-0.20250319144947-41a9ea7f7402 // indirect
+	go.opentelemetry.io/collector/consumer/consumererror v0.122.1 // indirect
 	go.opentelemetry.io/collector/consumer/xconsumer v0.122.2-0.20250319144947-41a9ea7f7402 // indirect
+	go.opentelemetry.io/collector/extension v1.28.1 // indirect
+	go.opentelemetry.io/collector/extension/xextension v0.122.1 // indirect
 	go.opentelemetry.io/collector/featuregate v1.28.2-0.20250319144947-41a9ea7f7402 // indirect
 	go.opentelemetry.io/collector/internal/fanoutconsumer v0.122.2-0.20250319144947-41a9ea7f7402 // indirect
 	go.opentelemetry.io/collector/pdata/pprofile v0.122.2-0.20250319144947-41a9ea7f7402 // indirect

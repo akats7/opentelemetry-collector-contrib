@@ -5,6 +5,8 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 
 import (
 	"context"
+	"go.opentelemetry.io/collector/exporter"
+	"go.opentelemetry.io/collector/exporter/exporterhelper"
 	"time"
 
 	"go.opentelemetry.io/collector/component"
@@ -26,6 +28,7 @@ func NewFactory() connector.Factory {
 
 func createDefaultConfig() component.Config {
 	return &Config{
+		QueueSettings: exporterhelper.NewDefaultQueueConfig(),
 		RetryInterval: 10 * time.Minute,
 		RetryGap:      0,
 		MaxRetries:    0,
@@ -33,12 +36,28 @@ func createDefaultConfig() component.Config {
 }
 
 func createTracesToTraces(
-	_ context.Context,
+	ctx context.Context,
 	set connector.Settings,
 	cfg component.Config,
 	traces consumer.Traces,
 ) (connector.Traces, error) {
-	return newTracesToTraces(set, cfg, traces)
+	t, err := newTracesToTraces(set, cfg, traces)
+	if err != nil {
+		return nil, err
+	}
+	expSettings := exporter.Settings{
+		ID:                set.ID,
+		TelemetrySettings: set.TelemetrySettings,
+		BuildInfo:         set.BuildInfo,
+	}
+
+	oCfg := cfg.(*Config)
+
+	return exporterhelper.NewTraces(ctx, expSettings, cfg,
+		t.ConsumeTraces,
+		exporterhelper.WithCapabilities(consumer.Capabilities{MutatesData: false}),
+		exporterhelper.WithQueue(oCfg.QueueSettings),
+	)
 }
 
 func createMetricsToMetrics(
