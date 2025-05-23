@@ -5,6 +5,7 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 
 import (
 	"errors"
+	"go.opentelemetry.io/collector/exporter/exporterhelper"
 	"time"
 
 	"go.opentelemetry.io/collector/pipeline"
@@ -16,6 +17,7 @@ var (
 )
 
 type Config struct {
+	QueueSettings exporterhelper.QueueConfig `mapstructure:"sending_queue"`
 	// PipelinePriority is the list of pipeline level priorities in a 1 - n configuration, multiple pipelines can
 	// sit at a single priority level and will be routed in a fanout. If any pipeline at a level fails, the
 	// level is considered unhealthy
