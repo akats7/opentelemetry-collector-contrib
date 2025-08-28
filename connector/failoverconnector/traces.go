@@ -28,15 +28,30 @@ func newTracesRouter(provider consumerProvider[consumer.Traces], cfg *Config) (*
 
 // Consume is the traces-specific consumption method
 func (f *tracesRouter) Consume(ctx context.Context, td ptrace.Traces) error {
+	// If we're currently in failover (pipeline index > 0), opportunistically
+	// attempt recovery on every call. This removes timing dependence on retry signals.
+	if f.pS.CurrentPipeline() > 0 {
+		if f.sampleRetryConsumers(ctx, td) {
+			return nil
+		}
+	} else {
+		// Even when healthy (index 0), we may have a pending retry token; drain it.
+		select {
+		case <-f.notifyRetry:
+		default:
+		}
+	}
+
+	// Best-effort: if a retry notification is present now, try sampling again.
 	select {
 	case <-f.notifyRetry:
-		if !f.sampleRetryConsumers(ctx, td) {
-			return f.consumeByHealthyPipeline(ctx, td)
+		if f.sampleRetryConsumers(ctx, td) {
+			return nil
 		}
-		return nil
 	default:
-		return f.consumeByHealthyPipeline(ctx, td)
 	}
+
+	return f.consumeByHealthyPipeline(ctx, td)
 }
 
 // consumeByHealthyPipeline will consume the traces by the current healthy level

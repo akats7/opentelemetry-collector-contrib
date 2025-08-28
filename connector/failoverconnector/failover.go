@@ -5,6 +5,7 @@ package failoverconnector // import "github.com/open-telemetry/opentelemetry-col
 
 import (
 	"errors"
+	"sync"
 
 	"go.opentelemetry.io/collector/pipeline"
 
@@ -23,6 +24,9 @@ type baseFailoverRouter[C any] struct {
 	cfg       *Config
 	pS        *state.PipelineSelector
 	consumers []C
+	// Protects access to the consumers slice to avoid data races between tests
+	// mutating consumers via ModifyConsumerAtIndex and concurrent reads during Consume.
+	consumersMu sync.RWMutex
 
 	errTryLock  *state.TryLock
 	notifyRetry chan struct{}
@@ -36,12 +40,18 @@ func (f *baseFailoverRouter[C]) getCurrentConsumer() (C, int) {
 	if pl >= len(f.cfg.PipelinePriority) {
 		return nilConsumer, pl
 	}
-	return f.consumers[pl], pl
+	f.consumersMu.RLock()
+	c := f.consumers[pl]
+	f.consumersMu.RUnlock()
+	return c, pl
 }
 
 // getConsumerAtIndex returns the consumer at a specific index
 func (f *baseFailoverRouter[C]) getConsumerAtIndex(idx int) C {
-	return f.consumers[idx]
+	f.consumersMu.RLock()
+	c := f.consumers[idx]
+	f.consumersMu.RUnlock()
+	return c
 }
 
 // reportConsumerError ensures only one consumer is reporting an error at a time to avoid multiple failovers
@@ -84,7 +94,9 @@ func newBaseFailoverRouter[C any](provider consumerProvider[C], cfg *Config) (*b
 
 // For Testing
 func (f *baseFailoverRouter[C]) ModifyConsumerAtIndex(idx int, c C) {
+	f.consumersMu.Lock()
 	f.consumers[idx] = c
+	f.consumersMu.Unlock()
 }
 
 func (f *baseFailoverRouter[C]) TestGetCurrentConsumerIndex() int {
@@ -96,5 +108,8 @@ func (f *baseFailoverRouter[C]) TestSetStableConsumerIndex(idx int) {
 }
 
 func (f *baseFailoverRouter[C]) TestGetConsumerAtIndex(idx int) C {
-	return f.consumers[idx]
+	f.consumersMu.RLock()
+	c := f.consumers[idx]
+	f.consumersMu.RUnlock()
+	return c
 }

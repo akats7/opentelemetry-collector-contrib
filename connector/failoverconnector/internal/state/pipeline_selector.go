@@ -59,9 +59,13 @@ func (p *PipelineSelector) LaunchRetry() {
 		for {
 			select {
 			case <-ticker.C:
+				// Block until a consumer drains or shutdown happens; avoids dropping retry notifications
 				select {
 				case p.retryChan <- struct{}{}:
-				default:
+				case <-ctx.Done():
+					return
+				case <-p.done:
+					return
 				}
 			case <-ctx.Done():
 				return
