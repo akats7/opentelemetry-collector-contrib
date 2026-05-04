@@ -10,41 +10,41 @@ import (
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/receiver"
+	"go.opentelemetry.io/collector/receiver/xreceiver"
+	"go.opentelemetry.io/collector/scraper"
 	"go.opentelemetry.io/collector/scraper/scraperhelper"
+	"go.uber.org/multierr"
+	"go.uber.org/zap"
 
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/ciscoosreceiver/internal/connection"
 	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/ciscoosreceiver/internal/metadata"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/ciscoosreceiver/internal/scraper/interfacesscraper"
+	"github.com/open-telemetry/opentelemetry-collector-contrib/receiver/ciscoosreceiver/internal/scraper/systemscraper"
 )
 
-const (
-	defaultCollectionInterval = 60 * time.Second
-	defaultTimeout            = 10 * time.Second
-)
+var scraperFactories = map[component.Type]scraper.Factory{
+	component.MustNewType("system"):     systemscraper.NewFactory(),
+	component.MustNewType("interfaces"): interfacesscraper.NewFactory(),
+}
 
-// NewFactory creates a factory for Cisco OS receiver.
 func NewFactory() receiver.Factory {
-	return receiver.NewFactory(
+	return xreceiver.NewFactory(
 		metadata.Type,
 		createDefaultConfig,
-		receiver.WithMetrics(createMetricsReceiver, metadata.MetricsStability),
+		xreceiver.WithMetrics(createMetricsReceiver, component.StabilityLevelDevelopment),
+		xreceiver.WithDeprecatedTypeAlias(metadata.DeprecatedType),
 	)
 }
 
 func createDefaultConfig() component.Config {
 	cfg := scraperhelper.NewDefaultControllerConfig()
-	cfg.CollectionInterval = defaultCollectionInterval
-	cfg.Timeout = defaultTimeout
+	cfg.Timeout = 10 * time.Second
+	cfg.CollectionInterval = 60 * time.Second
 
 	return &Config{
-		ControllerConfig:     cfg,
-		MetricsBuilderConfig: metadata.DefaultMetricsBuilderConfig(),
-		Devices:              []DeviceConfig{},
-		Scrapers: ScrapersConfig{
-			BGP:         true,
-			Environment: true,
-			Facts:       true,
-			Interfaces:  true,
-			Optics:      true,
-		},
+		ControllerConfig: cfg,
+		Devices:          []DeviceConfig{},
+		Scrapers:         map[component.Type]component.Config{},
 	}
 }
 
@@ -56,23 +56,95 @@ func createMetricsReceiver(
 ) (receiver.Metrics, error) {
 	conf := cfg.(*Config)
 
-	// TODO: Replace with actual scraper implementation in second PR
-	// For skeleton, we'll return a placeholder
-	_ = conf
-	_ = set
-	_ = consumer
-	return &nopMetricsReceiver{}, nil
+	var receivers []receiver.Metrics
+	for _, device := range conf.Devices {
+		connDevice := connection.DeviceConfig{
+			Device: connection.DeviceInfo{
+				Host: connection.HostInfo{
+					Name: device.Name,
+					IP:   device.Host,
+					Port: device.Port,
+				},
+			},
+			Auth: device.Auth,
+		}
+
+		var scraperOptions []scraperhelper.ControllerOption
+		for scraperType, scraperCfg := range conf.Scrapers {
+			factory, exists := scraperFactories[scraperType]
+			if !exists {
+				set.Logger.Warn("Unsupported scraper type",
+					zap.String("type", scraperType.String()),
+					zap.String("device", device.Name))
+				continue
+			}
+
+			freshCfg := factory.CreateDefaultConfig()
+
+			switch typedCfg := scraperCfg.(type) {
+			case *systemscraper.Config:
+				freshSysCfg := freshCfg.(*systemscraper.Config)
+				freshSysCfg.MetricsBuilderConfig = typedCfg.MetricsBuilderConfig
+				freshSysCfg.Device = connDevice
+				freshCfg = freshSysCfg
+			case *interfacesscraper.Config:
+				freshIntfCfg := freshCfg.(*interfacesscraper.Config)
+				freshIntfCfg.MetricsBuilderConfig = typedCfg.MetricsBuilderConfig
+				freshIntfCfg.Device = connDevice
+				freshCfg = freshIntfCfg
+			}
+
+			scraperOptions = append(scraperOptions, scraperhelper.AddFactoryWithConfig(factory, freshCfg))
+		}
+
+		if len(scraperOptions) == 0 {
+			continue
+		}
+
+		rcvr, err := scraperhelper.NewMetricsController(
+			&conf.ControllerConfig,
+			set,
+			consumer,
+			scraperOptions...,
+		)
+		if err != nil {
+			return nil, err
+		}
+		receivers = append(receivers, rcvr)
+	}
+
+	if len(receivers) == 0 {
+		return &nopMetricsReceiver{}, nil
+	}
+
+	if len(receivers) == 1 {
+		return receivers[0], nil
+	}
+
+	return &multiMetricsReceiver{receivers: receivers}, nil
 }
 
-// nopMetricsReceiver is a minimal receiver to satisfy component lifecycle tests.
 type nopMetricsReceiver struct{}
 
-func (r *nopMetricsReceiver) Start(_ context.Context, _ component.Host) error {
-	_ = r
-	return nil
+func (*nopMetricsReceiver) Start(_ context.Context, _ component.Host) error { return nil }
+func (*nopMetricsReceiver) Shutdown(_ context.Context) error                { return nil }
+
+type multiMetricsReceiver struct {
+	receivers []receiver.Metrics
 }
 
-func (r *nopMetricsReceiver) Shutdown(_ context.Context) error {
-	_ = r
-	return nil
+func (m *multiMetricsReceiver) Start(ctx context.Context, host component.Host) error {
+	var err error
+	for _, r := range m.receivers {
+		err = multierr.Append(err, r.Start(ctx, host))
+	}
+	return err
+}
+
+func (m *multiMetricsReceiver) Shutdown(ctx context.Context) error {
+	var err error
+	for _, r := range m.receivers {
+		err = multierr.Append(err, r.Shutdown(ctx))
+	}
+	return err
 }

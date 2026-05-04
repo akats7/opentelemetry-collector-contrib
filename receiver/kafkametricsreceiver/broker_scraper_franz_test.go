@@ -22,7 +22,7 @@ func franzTestConfig(t *testing.T) Config {
 	_, clientCfg := kafkatest.NewCluster(t, kfake.SeedTopics(1, "meta-topic"))
 	cfg := Config{
 		ClientConfig:         clientCfg,
-		MetricsBuilderConfig: metadata.DefaultMetricsBuilderConfig(),
+		MetricsBuilderConfig: metadata.NewDefaultMetricsBuilderConfig(),
 		ClusterAlias:         "test-cluster",
 	}
 	// keep retention metric disabled here (kfake does not expose broker config values)
@@ -117,24 +117,6 @@ func TestBrokerScraperFranz_Start(t *testing.T) {
 	require.NoError(t, s.Start(t.Context(), componenttest.NewNopHost()))
 	require.NoError(t, s.Shutdown(t.Context()))
 }
-
-// func TestBrokerScraperFranz_ScrapeHandlesClientError(t *testing.T) {
-// 	setFranzGo(t, true)
-
-// 	// stub the ctor to fail
-// 	orig := newFranzAdminClient
-// 	t.Cleanup(func() { newFranzAdminClient = orig })
-// 	newFranzAdminClient = func(ctx context.Context, cfg configkafka.ClientConfig, lg *zap.Logger, opts ...kgo.Opt) (*kadm.Client, *kgo.Client, error) {
-// 		return nil, nil, errors.New("new franz admin failed")
-// 	}
-
-// 	cfg := franzTestConfig(t)
-// 	s, err := createBrokerScraperFranz(t.Context(), cfg, receivertest.NewNopSettings(metadata.Type))
-// 	require.NoError(t, err)
-
-// 	_, err = s.ScrapeMetrics(t.Context())
-// 	require.Error(t, err)
-// }
 
 func TestBrokerScraperFranz_ShutdownWithoutStart_OK(t *testing.T) {
 	setFranzGo(t, true)

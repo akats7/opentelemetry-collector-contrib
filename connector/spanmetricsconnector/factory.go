@@ -1,7 +1,7 @@
 // Copyright The OpenTelemetry Authors
 // SPDX-License-Identifier: Apache-2.0
 
-//go:generate mdatagen metadata.yaml
+//go:generate make mdatagen
 
 package spanmetricsconnector // import "github.com/open-telemetry/opentelemetry-collector-contrib/connector/spanmetricsconnector"
 
@@ -13,6 +13,7 @@ import (
 	"github.com/jonboulle/clockwork"
 	"go.opentelemetry.io/collector/component"
 	"go.opentelemetry.io/collector/connector"
+	"go.opentelemetry.io/collector/connector/xconnector"
 	"go.opentelemetry.io/collector/consumer"
 	"go.opentelemetry.io/collector/featuregate"
 	"go.opentelemetry.io/collector/pdata/pcommon"
@@ -34,6 +35,7 @@ var (
 	includeCollectorInstanceID    *featuregate.Gate
 	useSecondAsDefaultMetricsUnit *featuregate.Gate
 	excludeResourceMetrics        *featuregate.Gate
+	useOtelStatusCodeAttribute    *featuregate.Gate
 )
 
 func init() {
@@ -62,14 +64,20 @@ func init() {
 		featuregate.WithRegisterDescription("When enabled, connector will exclude all resource attributes."),
 		featuregate.WithRegisterReferenceURL("https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/42103"),
 	)
+	useOtelStatusCodeAttribute = featuregate.GlobalRegistry().MustRegister(
+		"spanmetrics.statusCodeConvention.useOtelPrefix",
+		featuregate.StageAlpha,
+		featuregate.WithRegisterDescription("When enabled, generated metrics will use `otel.status_code=ERROR` instead of `status.code=STATUS_CODE_ERROR`"),
+	)
 }
 
 // NewFactory creates a factory for the spanmetrics connector.
 func NewFactory() connector.Factory {
-	return connector.NewFactory(
+	return xconnector.NewFactory(
 		metadata.Type,
 		createDefaultConfig,
-		connector.WithTracesToMetrics(createTracesToMetricsConnector, metadata.TracesToMetricsStability),
+		xconnector.WithTracesToMetrics(createTracesToMetricsConnector, metadata.TracesToMetricsStability),
+		xconnector.WithDeprecatedTypeAlias(metadata.DeprecatedType),
 	)
 }
 

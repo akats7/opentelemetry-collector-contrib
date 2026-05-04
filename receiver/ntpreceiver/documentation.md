@@ -18,10 +18,10 @@ Time difference between local and NTP server clocks
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| ns | Gauge | Int | development |
+| ns | Gauge | Int | Development |
 
 ## Resource Attributes
 
-| Name | Description | Values | Enabled |
-| ---- | ----------- | ------ | ------- |
-| ntp.host | NTP server used. Corresponds to configured `host`. | Any Str | true |
+| Name | Description | Values | Enabled | Semantic Convention |
+| ---- | ----------- | ------ | ------- | ------------------- |
+| ntp.host | NTP server used. Corresponds to configured `host`. | Any Str | true | - |

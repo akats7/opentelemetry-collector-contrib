@@ -18,7 +18,7 @@ Number of batch requests received by SQL Server.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {requests}/s | Gauge | Double | development |
+| {requests}/s | Gauge | Double | Development |
 
 ### sqlserver.batch.sql_compilation.rate
 
@@ -26,7 +26,7 @@ Number of SQL compilations needed.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {compilations}/s | Gauge | Double | development |
+| {compilations}/s | Gauge | Double | Development |
 
 ### sqlserver.batch.sql_recompilation.rate
 
@@ -34,7 +34,7 @@ Number of SQL recompilations needed.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {compilations}/s | Gauge | Double | development |
+| {compilations}/s | Gauge | Double | Development |
 
 ### sqlserver.lock.wait.rate
 
@@ -42,7 +42,7 @@ Number of lock requests resulting in a wait.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {requests}/s | Gauge | Double | development |
+| {requests}/s | Gauge | Double | Development |
 
 ### sqlserver.lock.wait_time.avg
 
@@ -52,7 +52,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| ms | Gauge | Double | development |
+| ms | Gauge | Double | Development |
 
 ### sqlserver.page.buffer_cache.hit_ratio
 
@@ -60,7 +60,7 @@ Pages found in the buffer pool without having to read from disk.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| % | Gauge | Double | development |
+| % | Gauge | Double | Development |
 
 ### sqlserver.page.checkpoint.flush.rate
 
@@ -70,7 +70,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {pages}/s | Gauge | Double | development |
+| {pages}/s | Gauge | Double | Development |
 
 ### sqlserver.page.lazy_write.rate
 
@@ -80,7 +80,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {writes}/s | Gauge | Double | development |
+| {writes}/s | Gauge | Double | Development |
 
 ### sqlserver.page.life_expectancy
 
@@ -88,13 +88,13 @@ Time a page will stay in the buffer pool.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| performance_counter.object_name | Category to which this counter belongs | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| performance_counter.object_name | Category to which this counter belongs | Any Str | Recommended | - |
 
 ### sqlserver.page.operation.rate
 
@@ -104,13 +104,13 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {operations}/s | Gauge | Double | development |
+| {operations}/s | Gauge | Double | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| type | The page operation types. | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| type | The page operation types. | Str: ``read``, ``write`` | Recommended | - |
 
 ### sqlserver.page.split.rate
 
@@ -120,7 +120,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {pages}/s | Gauge | Double | development |
+| {pages}/s | Gauge | Double | Development |
 
 ### sqlserver.transaction.rate
 
@@ -130,7 +130,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {transactions}/s | Gauge | Double | development |
+| {transactions}/s | Gauge | Double | Development |
 
 ### sqlserver.transaction.write.rate
 
@@ -140,7 +140,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {transactions}/s | Gauge | Double | development |
+| {transactions}/s | Gauge | Double | Development |
 
 ### sqlserver.transaction_log.flush.data.rate
 
@@ -150,7 +150,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| By/s | Gauge | Double | development |
+| By/s | Gauge | Double | Development |
 
 ### sqlserver.transaction_log.flush.rate
 
@@ -160,7 +160,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {flushes}/s | Gauge | Double | development |
+| {flushes}/s | Gauge | Double | Development |
 
 ### sqlserver.transaction_log.flush.wait.rate
 
@@ -170,7 +170,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {commits}/s | Gauge | Double | development |
+| {commits}/s | Gauge | Double | Development |
 
 ### sqlserver.transaction_log.growth.count
 
@@ -180,7 +180,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {growths} | Sum | Int | Cumulative | true | development |
+| {growths} | Sum | Int | Cumulative | true | Development |
 
 ### sqlserver.transaction_log.shrink.count
 
@@ -190,7 +190,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {shrinks} | Sum | Int | Cumulative | true | development |
+| {shrinks} | Sum | Int | Cumulative | true | Development |
 
 ### sqlserver.transaction_log.usage
 
@@ -200,7 +200,7 @@ This metric is only available when running on Windows.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| % | Gauge | Int | development |
+| % | Gauge | Int | Development |
 
 ### sqlserver.user.connection.count
 
@@ -208,7 +208,7 @@ Number of users connected to the SQL Server.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {connections} | Gauge | Int | development |
+| {connections} | Gauge | Int | Development |
 
 ## Optional Metrics
 
@@ -226,7 +226,7 @@ Computer uptime.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {seconds} | Gauge | Int | development |
+| {seconds} | Gauge | Int | Development |
 
 ### sqlserver.cpu.count
 
@@ -234,7 +234,7 @@ Number of CPUs.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {CPUs} | Gauge | Int | development |
+| {CPUs} | Gauge | Int | Development |
 
 ### sqlserver.database.backup_or_restore.rate
 
@@ -242,7 +242,7 @@ Total number of backups/restores.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{backups_or_restores}/s” | Gauge | Double | development |
+| “{backups_or_restores}/s” | Gauge | Double | Development |
 
 ### sqlserver.database.count
 
@@ -252,13 +252,13 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {databases} | Gauge | Int | development |
+| {databases} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| database.status | The current status of a database | Str: ``online``, ``restoring``, ``recovering``, ``pending_recovery``, ``suspect``, ``offline`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| database.status | The current status of a database | Str: ``online``, ``restoring``, ``recovering``, ``pending_recovery``, ``suspect``, ``offline`` | Recommended | - |
 
 ### sqlserver.database.execution.errors
 
@@ -266,7 +266,7 @@ Number of execution errors.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{errors}” | Gauge | Int | development |
+| “{errors}” | Gauge | Int | Development |
 
 ### sqlserver.database.full_scan.rate
 
@@ -274,7 +274,7 @@ The number of unrestricted full table or index scans.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {scans}/s | Gauge | Double | development |
+| {scans}/s | Gauge | Double | Development |
 
 ### sqlserver.database.io
 
@@ -284,16 +284,16 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | true | development |
+| By | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| physical_filename | The physical filename of the file being monitored. | Any Str | false |
-| logical_filename | The logical filename of the file being monitored. | Any Str | false |
-| file_type | The type of file being monitored. | Any Str | false |
-| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| physical_filename | The physical filename of the file being monitored. | Any Str | Recommended | - |
+| logical_filename | The logical filename of the file being monitored. | Any Str | Recommended | - |
+| file_type | The type of file being monitored. | Any Str | Recommended | - |
+| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | Recommended | - |
 
 ### sqlserver.database.latency
 
@@ -303,16 +303,16 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| s | Sum | Double | Cumulative | true | development |
+| s | Sum | Double | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| physical_filename | The physical filename of the file being monitored. | Any Str | false |
-| logical_filename | The logical filename of the file being monitored. | Any Str | false |
-| file_type | The type of file being monitored. | Any Str | false |
-| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| physical_filename | The physical filename of the file being monitored. | Any Str | Recommended | - |
+| logical_filename | The logical filename of the file being monitored. | Any Str | Recommended | - |
+| file_type | The type of file being monitored. | Any Str | Recommended | - |
+| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | Recommended | - |
 
 ### sqlserver.database.operations
 
@@ -322,16 +322,16 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {operations} | Sum | Int | Cumulative | true | development |
+| {operations} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| physical_filename | The physical filename of the file being monitored. | Any Str | false |
-| logical_filename | The logical filename of the file being monitored. | Any Str | false |
-| file_type | The type of file being monitored. | Any Str | false |
-| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| physical_filename | The physical filename of the file being monitored. | Any Str | Recommended | - |
+| logical_filename | The logical filename of the file being monitored. | Any Str | Recommended | - |
+| file_type | The type of file being monitored. | Any Str | Recommended | - |
+| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | Recommended | - |
 
 ### sqlserver.database.tempdb.space
 
@@ -339,13 +339,13 @@ Total free space in temporary DB.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| “KB” | Sum | Int | Cumulative | false | development |
+| “KB” | Sum | Int | Cumulative | false | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| tempdb.state | The status of the tempdb space usage. | Str: ``free``, ``used`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| tempdb.state | The status of the tempdb space usage. | Str: ``free``, ``used`` | Recommended | - |
 
 ### sqlserver.database.tempdb.version_store.size
 
@@ -353,7 +353,7 @@ TempDB version store size.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “KB” | Gauge | Double | development |
+| “KB” | Gauge | Double | Development |
 
 ### sqlserver.deadlock.rate
 
@@ -361,7 +361,7 @@ Total number of deadlocks.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{deadlocks}/s” | Gauge | Double | development |
+| “{deadlocks}/s” | Gauge | Double | Development |
 
 ### sqlserver.index.search.rate
 
@@ -369,7 +369,7 @@ Total number of index searches.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{searches}/s” | Gauge | Double | development |
+| “{searches}/s” | Gauge | Double | Development |
 
 ### sqlserver.lock.timeout.rate
 
@@ -377,7 +377,7 @@ Total number of lock timeouts.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{timeouts}/s” | Gauge | Double | development |
+| “{timeouts}/s” | Gauge | Double | Development |
 
 ### sqlserver.lock.wait.count
 
@@ -387,7 +387,7 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {wait} | Sum | Int | Cumulative | true | development |
+| {wait} | Sum | Int | Cumulative | true | Development |
 
 ### sqlserver.login.rate
 
@@ -395,7 +395,7 @@ Total number of logins.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{logins}/s” | Gauge | Double | development |
+| “{logins}/s” | Gauge | Double | Development |
 
 ### sqlserver.logout.rate
 
@@ -403,7 +403,7 @@ Total number of logouts.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{logouts}/s” | Gauge | Double | development |
+| “{logouts}/s” | Gauge | Double | Development |
 
 ### sqlserver.memory.grants.pending.count
 
@@ -411,7 +411,7 @@ Total number of memory grants pending.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| “{grants}” | Sum | Int | Cumulative | false | development |
+| “{grants}” | Sum | Int | Cumulative | false | Development |
 
 ### sqlserver.memory.usage
 
@@ -419,7 +419,7 @@ Total memory in use.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| “KB” | Sum | Double | Cumulative | false | development |
+| “KB” | Sum | Double | Cumulative | false | Development |
 
 ### sqlserver.os.wait.duration
 
@@ -429,14 +429,14 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| s | Sum | Double | Cumulative | true | development |
+| s | Sum | Double | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| wait.category | Category of the reason for a wait. | Any Str | false |
-| wait.type | Type of the wait, view [WaitTypes documentation](https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sys-dm-os-wait-stats-transact-sql?view=sql-server-ver16#WaitTypes) for more information. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| wait.category | Category of the reason for a wait. | Any Str | Recommended | - |
+| wait.type | Type of the wait, view [WaitTypes documentation](https://learn.microsoft.com/en-us/sql/relational-databases/system-dynamic-management-views/sys-dm-os-wait-stats-transact-sql?view=sql-server-ver16#WaitTypes) for more information. | Any Str | Recommended | - |
 
 ### sqlserver.page.buffer_cache.free_list.stalls.rate
 
@@ -444,7 +444,7 @@ Number of free list stalls.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{stalls}/s” | Gauge | Int | development |
+| “{stalls}/s” | Gauge | Int | Development |
 
 ### sqlserver.page.lookup.rate
 
@@ -452,7 +452,7 @@ Total number of page lookups.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{lookups}/s” | Gauge | Double | development |
+| “{lookups}/s” | Gauge | Double | Development |
 
 ### sqlserver.processes.blocked
 
@@ -462,7 +462,7 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {processes} | Gauge | Int | development |
+| {processes} | Gauge | Int | Development |
 
 ### sqlserver.replica.data.rate
 
@@ -470,13 +470,13 @@ Throughput rate of replica data.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| By/s | Gauge | Double | development |
+| By/s | Gauge | Double | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| replica.direction | The direction of flow of bytes for replica. | Str: ``transmit``, ``receive`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| replica.direction | The direction of flow of bytes for replica. | Str: ``transmit``, ``receive`` | Recommended | - |
 
 ### sqlserver.resource_pool.disk.operations
 
@@ -486,13 +486,13 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {operations}/s | Gauge | Double | development |
+| {operations}/s | Gauge | Double | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| direction | The direction of flow of bytes or operations. | Str: ``read``, ``write`` | Recommended | - |
 
 ### sqlserver.resource_pool.disk.throttled.read.rate
 
@@ -502,7 +502,7 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {reads}/s | Gauge | Int | development |
+| {reads}/s | Gauge | Int | Development |
 
 ### sqlserver.resource_pool.disk.throttled.write.rate
 
@@ -512,7 +512,7 @@ This metric is only available when the receiver is configured to directly connec
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {writes}/s | Gauge | Double | development |
+| {writes}/s | Gauge | Double | Development |
 
 ### sqlserver.table.count
 
@@ -520,14 +520,14 @@ The number of tables.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| “{tables}” | Sum | Int | Cumulative | false | development |
+| “{tables}” | Sum | Int | Cumulative | false | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| table.state | The state of the table. | Str: ``active``, ``inactive`` | false |
-| table.status | The status of the table. | Str: ``temporary``, ``permanent`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| table.state | The state of the table. | Str: ``active``, ``inactive`` | Recommended | - |
+| table.status | The status of the table. | Str: ``temporary``, ``permanent`` | Recommended | - |
 
 ### sqlserver.transaction.delay
 
@@ -535,7 +535,7 @@ Time consumed in transaction delays.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| ms | Sum | Double | Cumulative | false | development |
+| ms | Sum | Double | Cumulative | false | Development |
 
 ### sqlserver.transaction.mirror_write.rate
 
@@ -543,7 +543,7 @@ Total number of mirror write transactions.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| “{transactions}/s” | Gauge | Double | development |
+| “{transactions}/s” | Gauge | Double | Development |
 
 ## Default Events
 
@@ -571,41 +571,46 @@ query sample
 
 #### Attributes
 
-| Name | Description | Values |
-| ---- | ----------- | ------ |
-| client.address | Hostname or address of the client. | Any Str |
-| client.port | TCP port used by the client. | Any Int |
-| db.namespace | The database name. | Any Str |
-| db.query.text | The text of the database query being executed. | Any Str |
-| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Any Str |
-| network.peer.address | IP address of the peer client. | Any Str |
-| network.peer.port | TCP port used by the peer client. | Any Int |
-| sqlserver.blocking_session_id | Session ID that is blocking the current session. 0 if none. | Any Int |
-| sqlserver.context_info | Context information for the session, represented as a hexadecimal string. | Any Str |
-| sqlserver.command | SQL command type being executed. | Any Str |
-| sqlserver.cpu_time | CPU time consumed by the query, in seconds. | Any Double |
-| sqlserver.deadlock_priority | Deadlock priority value for the session. | Any Int |
-| sqlserver.estimated_completion_time | Estimated time remaining for the request to complete, in seconds. | Any Double |
-| sqlserver.lock_timeout | Lock timeout value in seconds. | Any Double |
-| sqlserver.logical_reads | Number of logical reads (data read from cache/memory). | Any Int |
-| sqlserver.open_transaction_count | Number of transactions currently open in the session. | Any Int |
-| sqlserver.percent_complete | Percentage of work completed. | Any Double |
-| sqlserver.query_hash | Binary hash value calculated on the query and used to identify queries with similar logic, reported in the HEX format. | Any Str |
-| sqlserver.query_plan_hash | Binary hash value calculated on the query execution plan and used to identify similar query execution plans, reported in the HEX format. | Any Str |
-| sqlserver.query_start | Timestamp of when the SQL query started (ISO 8601 format). | Any Str |
-| sqlserver.reads | Number of physical reads performed by the query. | Any Int |
-| sqlserver.request_status | Status of the request (e.g., running, suspended). | Any Str |
-| sqlserver.row_count | Number of rows affected or returned by the query. | Any Int |
-| sqlserver.session_id | ID of the SQL Server session. | Any Int |
-| sqlserver.session_status | Status of the session (e.g., running, sleeping). | Any Str |
-| sqlserver.total_elapsed_time | Total elapsed time for completed executions of this plan, reported in delta seconds. | Any Double |
-| sqlserver.transaction_id | Unique ID of the active transaction. | Any Int |
-| sqlserver.transaction_isolation_level | Transaction isolation level used in the session. Represented as numeric constant. | Any Int |
-| sqlserver.wait_resource | The resource for which the session is waiting. | Any Str |
-| sqlserver.wait_time | Duration in seconds the request has been waiting. | Any Double |
-| sqlserver.wait_type | Type of wait encountered by the request. Empty if none. | Any Str |
-| sqlserver.writes | Number of writes performed by the query. | Any Int |
-| user.name | Login name associated with the SQL Server session. | Any Str |
+| Name | Description | Values | Semantic Convention |
+| ---- | ----------- | ------ | ------------------- |
+| client.address | Hostname or address of the client. | Any Str | - |
+| client.port | TCP port used by the client. | Any Int | - |
+| db.namespace | The database name. | Any Str | - |
+| db.query.text | The text of the database query being executed. | Any Str | - |
+| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Any Str | - |
+| network.peer.address | IP address of the peer client. | Any Str | - |
+| network.peer.port | TCP port used by the peer client. | Any Int | - |
+| sqlserver.blocking_session_id | Session ID that is blocking the current session. 0 if none. | Any Int | - |
+| sqlserver.blocking.start_time | Timestamp of when the current blocking wait began (ISO 8601 format). | Any Str | - |
+| sqlserver.context_info | Context information for the session, represented as a hexadecimal string. | Any Str | - |
+| sqlserver.command | SQL command type being executed. | Any Str | - |
+| sqlserver.cpu_time | CPU time consumed by the query, in seconds. | Any Double | - |
+| sqlserver.deadlock_priority | Deadlock priority value for the session. | Any Int | - |
+| sqlserver.estimated_completion_time | Estimated time remaining for the request to complete, in seconds. | Any Double | - |
+| sqlserver.lock_timeout | Lock timeout value in seconds. | Any Double | - |
+| sqlserver.logical_reads | Number of logical reads (data read from cache/memory). | Any Int | - |
+| sqlserver.open_transaction_count | Number of transactions currently open in the session. | Any Int | - |
+| sqlserver.percent_complete | Percentage of work completed. | Any Double | - |
+| sqlserver.query_hash | Binary hash value calculated on the query and used to identify queries with similar logic, reported in the HEX format. | Any Str | - |
+| sqlserver.query_plan_hash | Binary hash value calculated on the query execution plan and used to identify similar query execution plans, reported in the HEX format. | Any Str | - |
+| sqlserver.query_start | Timestamp of when the SQL query started (ISO 8601 format). | Any Str | - |
+| sqlserver.reads | Number of physical reads performed by the query. | Any Int | - |
+| sqlserver.request_status | Status of the request (e.g., running, suspended). | Any Str | - |
+| sqlserver.wait.resource.id | SQL Server identifier for the locked or waited-on resource, if available. | Any Str | - |
+| sqlserver.wait.resource.type | SQL Server type of the locked or waited-on resource, if available. | Any Str | - |
+| sqlserver.row_count | Number of rows affected or returned by the query. | Any Int | - |
+| sqlserver.session_id | ID of the SQL Server session. | Any Int | - |
+| sqlserver.session_status | Status of the session (e.g., running, sleeping). | Any Str | - |
+| sqlserver.total_elapsed_time | Total elapsed time for completed executions of this plan, reported in delta seconds. | Any Double | - |
+| sqlserver.transaction_id | Unique ID of the active transaction. | Any Int | - |
+| sqlserver.transaction_isolation_level | Transaction isolation level used in the session. Represented as numeric constant. | Any Int | - |
+| sqlserver.wait_resource | The resource for which the session is waiting. | Any Str | - |
+| sqlserver.wait_time | Duration in seconds the request has been waiting. | Any Double | - |
+| sqlserver.wait_type | Type of wait encountered by the request. Empty if none. | Any Str | - |
+| sqlserver.writes | Number of writes performed by the query. | Any Int | - |
+| user.name | Login name associated with the SQL Server session. | Any Str | - |
+| sqlserver.procedure_id | The SQL Server ID of the stored procedure, if any | Any Str | - |
+| sqlserver.procedure_name | The name of the stored procedure, if any | Any Str | - |
 
 ### db.server.top_query
 
@@ -613,32 +618,45 @@ top query
 
 #### Attributes
 
-| Name | Description | Values |
-| ---- | ----------- | ------ |
-| sqlserver.total_worker_time | Total amount of CPU time that was consumed by executions of this plan since it was compiled, reported in delta seconds. | Any Double |
-| db.query.text | The text of the database query being executed. | Any Str |
-| sqlserver.execution_count | Number of times that the plan has been executed since it was last compiled, reported in delta value. | Any Int |
-| sqlserver.total_logical_reads | Total number of logical reads performed by executions of this plan since it was compiled, reported in delta value. | Any Int |
-| sqlserver.total_logical_writes | Total number of logical writes performed by executions of this plan since it was compiled, reported in delta value. | Any Int |
-| sqlserver.total_physical_reads | Total number of physical reads performed by executions of this plan since it was compiled, reported in delta value. | Any Int |
-| sqlserver.query_hash | Binary hash value calculated on the query and used to identify queries with similar logic, reported in the HEX format. | Any Str |
-| sqlserver.query_plan | The query execution plan used by the SQL Server. | Any Str |
-| sqlserver.query_plan_hash | Binary hash value calculated on the query execution plan and used to identify similar query execution plans, reported in the HEX format. | Any Str |
-| sqlserver.total_rows | Total number of rows returned by the query, reported in delta value. | Any Int |
-| sqlserver.total_elapsed_time | Total elapsed time for completed executions of this plan, reported in delta seconds. | Any Double |
-| sqlserver.total_grant_kb | The total amount of reserved memory grant in KB this plan received since it was compiled, reported in delta value. | Any Int |
-| server.address | The network address of the server hosting the database. | Any Str |
-| server.port | The port number on which the server is listening. | Any Int |
-| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Any Str |
+| Name | Description | Values | Semantic Convention |
+| ---- | ----------- | ------ | ------------------- |
+| sqlserver.total_worker_time | Total amount of CPU time that was consumed by executions of this plan since it was compiled, reported in delta seconds. | Any Double | - |
+| db.query.text | The text of the database query being executed. | Any Str | - |
+| sqlserver.execution_count | Number of times that the plan has been executed since it was last compiled, reported in delta value. | Any Int | - |
+| sqlserver.total_logical_reads | Total number of logical reads performed by executions of this plan since it was compiled, reported in delta value. | Any Int | - |
+| sqlserver.total_logical_writes | Total number of logical writes performed by executions of this plan since it was compiled, reported in delta value. | Any Int | - |
+| sqlserver.total_physical_reads | Total number of physical reads performed by executions of this plan since it was compiled, reported in delta value. | Any Int | - |
+| sqlserver.query_hash | Binary hash value calculated on the query and used to identify queries with similar logic, reported in the HEX format. | Any Str | - |
+| sqlserver.query_plan | The query execution plan used by the SQL Server. | Any Str | - |
+| sqlserver.query_plan_hash | Binary hash value calculated on the query execution plan and used to identify similar query execution plans, reported in the HEX format. | Any Str | - |
+| sqlserver.total_rows | Total number of rows returned by the query, reported in delta value. | Any Int | - |
+| sqlserver.total_elapsed_time | Total elapsed time for completed executions of this plan, reported in delta seconds. | Any Double | - |
+| sqlserver.total_grant_kb | The total amount of reserved memory grant in KB this plan received since it was compiled, reported in delta value. | Any Int | - |
+| server.address | The network address of the server hosting the database. | Any Str | - |
+| server.port | The port number on which the server is listening. | Any Int | - |
+| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Any Str | - |
+| sqlserver.procedure_execution_count | Number of times that the procedure has been executed since it was last compiled, reported in delta value. | Any Int | - |
+| sqlserver.procedure_id | The SQL Server ID of the stored procedure, if any | Any Str | - |
+| sqlserver.procedure_name | The name of the stored procedure, if any | Any Str | - |
 
 ## Resource Attributes
 
-| Name | Description | Values | Enabled |
-| ---- | ----------- | ------ | ------- |
-| host.name | The host name of SQL Server | Any Str | true |
-| server.address | Name of the database host. | Any Str | false |
-| server.port | Server port number. | Any Int | false |
-| service.instance.id | A unique identifier of the SQL Server instance in the format host:port. This resource attribute is only available when the receiver is configured to directly connect to SQL Server. | Any Str | true |
-| sqlserver.computer.name | The name of the SQL Server instance being monitored. | Any Str | false |
-| sqlserver.database.name | The name of the SQL Server database. | Any Str | true |
-| sqlserver.instance.name | The name of the SQL Server instance being monitored. | Any Str | false |
+| Name | Description | Values | Enabled | Semantic Convention |
+| ---- | ----------- | ------ | ------- | ------------------- |
+| host.name | The host name of SQL Server | Any Str | true | - |
+| server.address | Name of the database host. | Any Str | false | - |
+| server.port | Server port number. | Any Int | false | - |
+| service.instance.id | A unique identifier of the SQL Server instance in the format host:port. This resource attribute is only available when the receiver is configured to directly connect to SQL Server. | Any Str | true | - |
+| sqlserver.computer.name | The name of the SQL Server instance being monitored. | Any Str | false | - |
+| sqlserver.database.name | The name of the SQL Server database. | Any Str | true | - |
+| sqlserver.instance.name | The name of the SQL Server instance being monitored. | Any Str | false | - |
+
+## Feature Gates
+
+This component has the following feature gates:
+
+| Feature Gate | Stage | Description | From Version | To Version | Reference |
+| ------------ | ----- | ----------- | ------------ | ---------- | --------- |
+| `receiver.sqlserver.RemoveServerResourceAttribute` | alpha | When enabled, the server.address and server.port resource attributes are removed from metrics. | v0.129.0 | N/A | [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/pull/40141) |
+
+For more information about feature gates, see the [Feature Gates](https://github.com/open-telemetry/opentelemetry-collector/blob/main/featuregate/README.md) documentation.

@@ -21,11 +21,11 @@ Gauge values map to service status as follows: 0 - Failed to retrieve service st
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {status} | Gauge | Int | development |
+| {status} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| name | The name of the windows Service being reported. | Any Str | false |
-| startup_mode | Startup mode of Windows Service | Str: ``boot_start``, ``system_start``, ``auto_start``, ``demand_start``, ``disabled`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| name | The name of the windows Service being reported. | Any Str | Required | - |
+| startup_mode | Startup mode of Windows Service | Str: ``boot_start``, ``system_start``, ``auto_start``, ``demand_start``, ``disabled`` | Required | - |

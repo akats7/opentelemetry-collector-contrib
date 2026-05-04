@@ -25,6 +25,7 @@ import (
 	"go.opentelemetry.io/collector/component/componentstatus"
 	"go.opentelemetry.io/collector/component/componenttest"
 	"go.opentelemetry.io/collector/config/confighttp"
+	"go.opentelemetry.io/collector/config/confignet"
 	"go.opentelemetry.io/collector/config/configoptional"
 	"go.opentelemetry.io/collector/config/configtls"
 	"go.opentelemetry.io/collector/consumer"
@@ -63,7 +64,10 @@ func Test_signalfxreceiver_New(t *testing.T) {
 			args: args{
 				config: Config{
 					ServerConfig: confighttp.ServerConfig{
-						Endpoint: "localhost:1234",
+						NetAddr: confignet.AddrConfig{
+							Transport: "tcp",
+							Endpoint:  "localhost:1234",
+						},
 					},
 				},
 				nextConsumer: consumertest.NewNop(),
@@ -89,7 +93,7 @@ func Test_signalfxreceiver_New(t *testing.T) {
 func Test_signalfxreceiver_EndToEnd(t *testing.T) {
 	addr := testutil.GetAvailableLocalAddress(t)
 	cfg := createDefaultConfig().(*Config)
-	cfg.Endpoint = addr
+	cfg.NetAddr.Endpoint = addr
 	sink := new(consumertest.MetricsSink)
 	r, err := newReceiver(receivertest.NewNopSettings(metadata.Type), *cfg)
 	require.NoError(t, err)
@@ -178,7 +182,7 @@ func Test_signalfxreceiver_EndToEnd(t *testing.T) {
 
 func Test_sfxReceiver_handleReq(t *testing.T) {
 	config := createDefaultConfig().(*Config)
-	config.Endpoint = "localhost:0" // Actually not creating the endpoint
+	config.NetAddr.Endpoint = "localhost:0" // Actually not creating the endpoint
 
 	currentTime := time.Now().Unix() * 1e3
 	sFxMsg := buildSFxDatapointMsg(currentTime, 13, 3)
@@ -448,7 +452,7 @@ func Test_sfxReceiver_handleReq(t *testing.T) {
 
 func Test_sfxReceiver_handleEventReq(t *testing.T) {
 	config := (NewFactory()).CreateDefaultConfig().(*Config)
-	config.Endpoint = "localhost:0" // Actually not creating the endpoint
+	config.NetAddr.Endpoint = "localhost:0" // Actually not creating the endpoint
 
 	currentTime := time.Now().Unix() * 1e3
 	sFxMsg := buildSFxEventMsg(currentTime, 3)
@@ -620,7 +624,7 @@ func Test_sfxReceiver_handleEventReq(t *testing.T) {
 func Test_sfxReceiver_TLS(t *testing.T) {
 	addr := testutil.GetAvailableLocalAddress(t)
 	cfg := createDefaultConfig().(*Config)
-	cfg.Endpoint = addr
+	cfg.NetAddr.Endpoint = addr
 	cfg.TLS = configoptional.Some(configtls.ServerConfig{
 		Config: configtls.Config{
 			CertFile: "./testdata/server.crt",
@@ -768,7 +772,7 @@ func sfxCategoryPtr(t sfxpb.EventCategory) *sfxpb.EventCategory {
 
 func buildNDimensions(n uint) []*sfxpb.Dimension {
 	d := make([]*sfxpb.Dimension, 0, n)
-	for i := uint(0); i < n; i++ {
+	for i := range n {
 		idx := int(i)
 		suffix := strconv.Itoa(idx)
 		d = append(d, &sfxpb.Dimension{
@@ -830,7 +834,7 @@ func buildHistogram(im pmetric.Metric) {
 }
 
 func addAttributes(count int, dst pcommon.Map) {
-	for i := 0; i < count; i++ {
+	for i := range count {
 		suffix := strconv.Itoa(i)
 		dst.PutStr("k"+suffix, "v"+suffix)
 	}
@@ -843,7 +847,7 @@ func buildOtlpMetrics(metricsCount int) *pmetric.Metrics {
 	ilm := md.ResourceMetrics().At(0).ScopeMetrics().At(0).Metrics()
 	ilm.EnsureCapacity(metricsCount)
 
-	for i := 0; i < metricsCount; i++ {
+	for i := range metricsCount {
 		switch i % 2 {
 		case 0:
 			buildGauge(ilm.AppendEmpty())

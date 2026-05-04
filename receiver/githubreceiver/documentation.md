@@ -18,15 +18,15 @@ The number of changes (pull requests) in a repository, categorized by their stat
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {change} | Gauge | Int | development |
+| {change} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.change.state | The state of a change (pull request) | Str: ``open``, ``merged`` | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.change.state | The state of a change (pull request) | Str: ``open``, ``merged`` | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
 
 ### vcs.change.duration
 
@@ -34,16 +34,16 @@ The time duration a change (pull request/merge request/changelist) has been in a
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
-| vcs.change.state | The state of a change (pull request) | Str: ``open``, ``merged`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
+| vcs.change.state | The state of a change (pull request) | Str: ``open``, ``merged`` | Recommended | - |
 
 ### vcs.change.time_to_approval
 
@@ -51,15 +51,15 @@ The amount of time it took a change (pull request) to go from open to approved.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
 
 ### vcs.change.time_to_merge
 
@@ -67,15 +67,15 @@ The amount of time it took a change (pull request) to go from open to merged.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
 
 ### vcs.ref.count
 
@@ -83,15 +83,15 @@ The number of refs of type branch in a repository.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {ref} | Gauge | Int | development |
+| {ref} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.type | The type of the reference in the repository. | Str: ``branch``, ``tag`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.type | The type of the reference in the repository. | Str: ``branch``, ``tag`` | Recommended | - |
 
 ### vcs.ref.lines_delta
 
@@ -99,19 +99,19 @@ The number of lines added/removed in a ref (branch) relative to the default bran
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {line} | Gauge | Int | development |
+| {line} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
-| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | false |
-| vcs.ref.base.name | The name of the VCS base reference (branch/tag) for comparison. | Any Str | false |
-| vcs.ref.base.type | The type of the base reference (branch, tag). | Str: ``branch``, ``tag`` | false |
-| vcs.line_change.type | The type of line change being measured on a ref (branch). | Str: ``added``, ``removed`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
+| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | Recommended | - |
+| vcs.ref.base.name | The name of the VCS base reference (branch/tag) for comparison. | Any Str | Recommended | - |
+| vcs.ref.base.type | The type of the base reference (branch, tag). | Str: ``branch``, ``tag`` | Recommended | - |
+| vcs.line_change.type | The type of line change being measured on a ref (branch). | Str: ``added``, ``removed`` | Recommended | - |
 
 ### vcs.ref.revisions_delta
 
@@ -119,19 +119,19 @@ The number of revisions (commits) a ref (branch) is ahead/behind the branch from
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {revision} | Gauge | Int | development |
+| {revision} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
-| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | false |
-| vcs.ref.base.name | The name of the VCS base reference (branch/tag) for comparison. | Any Str | false |
-| vcs.ref.base.type | The type of the base reference (branch, tag). | Str: ``branch``, ``tag`` | false |
-| vcs.revision_delta.direction | The type of revision comparison. | Str: ``ahead``, ``behind`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
+| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | Recommended | - |
+| vcs.ref.base.name | The name of the VCS base reference (branch/tag) for comparison. | Any Str | Recommended | - |
+| vcs.ref.base.type | The type of the base reference (branch, tag). | Str: ``branch``, ``tag`` | Recommended | - |
+| vcs.revision_delta.direction | The type of revision comparison. | Str: ``ahead``, ``behind`` | Recommended | - |
 
 ### vcs.ref.time
 
@@ -139,16 +139,16 @@ Time a ref (branch) created from the default branch (trunk) has existed. The `vc
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
-| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | false |
-| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
+| vcs.ref.head.name | The name of the VCS head reference (branch). | Any Str | Recommended | - |
+| vcs.ref.head.type | The type of the head reference (branch, tag). | Str: ``branch``, ``tag`` | Recommended | - |
 
 ### vcs.repository.count
 
@@ -156,7 +156,7 @@ The number of repositories in an organization.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {repository} | Gauge | Int | development |
+| {repository} | Gauge | Int | Development |
 
 ## Optional Metrics
 
@@ -174,18 +174,28 @@ The number of unique contributors to a repository.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {contributor} | Gauge | Int | development |
+| {contributor} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | false |
-| vcs.repository.name | The name of the VCS repository. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| vcs.repository.url.full | The canonical URL of the repository providing the complete HTTPS address. | Any Str | Recommended | - |
+| vcs.repository.name | The name of the VCS repository. | Any Str | Recommended | - |
 
 ## Resource Attributes
 
-| Name | Description | Values | Enabled |
-| ---- | ----------- | ------ | ------- |
-| vcs.owner.name | The group owner within the version control system | Any Str | true |
-| vcs.provider.name | The name of the version control system provider | Any Str | true |
+| Name | Description | Values | Enabled | Semantic Convention |
+| ---- | ----------- | ------ | ------- | ------------------- |
+| vcs.owner.name | The group owner within the version control system | Any Str | true | - |
+| vcs.provider.name | The name of the version control system provider | Any Str | true | - |
+
+## Feature Gates
+
+This component has the following feature gates:
+
+| Feature Gate | Stage | Description | From Version | To Version | Reference |
+| ------------ | ----- | ----------- | ------------ | ---------- | --------- |
+| `receiver.githubreceiver.UseCheckRunID` | beta | When enabled, deterministic job, step, and queue span IDs are derived from the GitHub check_run_id (the WorkflowJob.id webhook field, also exposed in-runner as ${{ job.check_run_id }}). Step span IDs additionally incorporate the step's raw name, allowing in-action telemetry tools to reproduce matching span IDs without calling the GitHub REST API and without knowing the runner-dependent step number. Payloads missing a check_run_id are rejected while this gate is enabled. Workflows with duplicate step names within a job will log a warning; duplicate steps will share the same span ID. | v0.151.0 | N/A | [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/44856) |
+
+For more information about feature gates, see the [Feature Gates](https://github.com/open-telemetry/opentelemetry-collector/blob/main/featuregate/README.md) documentation.

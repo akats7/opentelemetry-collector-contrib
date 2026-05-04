@@ -18,13 +18,13 @@ Total CPU seconds broken down by different states.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| s | Sum | Double | Cumulative | true | development |
+| s | Sum | Double | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| state | Breakdown of CPU usage by type. | Str: ``system``, ``user``, ``wait`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| state | Breakdown of CPU usage by type. | Str: ``system``, ``user``, ``wait`` | Recommended | - |
 
 ### process.disk.io
 
@@ -32,13 +32,13 @@ Disk bytes transferred.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | true | development |
+| By | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| direction | Direction of flow of bytes (read or write). | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| direction | Direction of flow of bytes (read or write). | Str: ``read``, ``write`` | Recommended | - |
 
 ### process.memory.usage
 
@@ -46,7 +46,7 @@ The amount of physical memory in use.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | false | development |
+| By | Sum | Int | Cumulative | false | Development |
 
 ### process.memory.virtual
 
@@ -54,7 +54,7 @@ Virtual memory size.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | false | development |
+| By | Sum | Int | Cumulative | false | Development |
 
 ## Optional Metrics
 
@@ -74,13 +74,13 @@ This metric is only available on Linux.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {count} | Sum | Int | Cumulative | true | development |
+| {count} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| type | Type of context switched. | Str: ``involuntary``, ``voluntary`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| type | Type of context switched. | Str: ``involuntary``, ``voluntary`` | Recommended | - |
 
 ### process.cpu.utilization
 
@@ -88,13 +88,13 @@ Percentage of total CPU time used by the process since last scrape, expressed as
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| 1 | Gauge | Double | development |
+| 1 | Gauge | Double | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| state | Breakdown of CPU usage by type. | Str: ``system``, ``user``, ``wait`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| state | Breakdown of CPU usage by type. | Str: ``system``, ``user``, ``wait`` | Recommended | - |
 
 ### process.disk.operations
 
@@ -102,13 +102,13 @@ Number of disk operations performed by the process.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {operations} | Sum | Int | Cumulative | true | development |
+| {operations} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| direction | Direction of flow of bytes (read or write). | Str: ``read``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| direction | Direction of flow of bytes (read or write). | Str: ``read``, ``write`` | Recommended | - |
 
 ### process.handles
 
@@ -118,7 +118,7 @@ This metric is only available on Windows.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {count} | Sum | Int | Cumulative | false | development |
+| {count} | Sum | Int | Cumulative | false | Development |
 
 ### process.memory.utilization
 
@@ -126,7 +126,7 @@ Percentage of total physical memory that is used by the process.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| 1 | Gauge | Double | development |
+| 1 | Gauge | Double | Development |
 
 ### process.open_file_descriptors
 
@@ -136,7 +136,7 @@ On Windows this metric captures the number of open handles currently held by the
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {count} | Sum | Int | Cumulative | false | development |
+| {count} | Sum | Int | Cumulative | false | Development |
 
 ### process.paging.faults
 
@@ -146,13 +146,13 @@ This metric is only available on Linux.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {faults} | Sum | Int | Cumulative | true | development |
+| {faults} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| type | Type of memory paging fault. | Str: ``major``, ``minor`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| type | Type of memory paging fault. | Str: ``major``, ``minor`` | Recommended | - |
 
 ### process.signals_pending
 
@@ -162,7 +162,7 @@ This metric is only available on Linux.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {signals} | Sum | Int | Cumulative | false | development |
+| {signals} | Sum | Int | Cumulative | false | Development |
 
 ### process.threads
 
@@ -170,7 +170,7 @@ Process threads count.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {threads} | Sum | Int | Cumulative | false | development |
+| {threads} | Sum | Int | Cumulative | false | Development |
 
 ### process.uptime
 
@@ -178,17 +178,17 @@ The time the process has been running.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Double | development |
+| s | Gauge | Double | Development |
 
 ## Resource Attributes
 
-| Name | Description | Values | Enabled |
-| ---- | ----------- | ------ | ------- |
-| process.cgroup | cgroup associated with the process (Linux only). | Any Str | false |
-| process.command | The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in proc/[pid]/cmdline. On Windows, can be set to the first parameter extracted from GetCommandLineW. | Any Str | true |
-| process.command_line | The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of GetCommandLineW. Do not set this if you have to assemble it just for monitoring; use process.command_args instead. | Any Str | true |
-| process.executable.name | The name of the process executable. On Linux based systems, can be set to the Name in proc/[pid]/status. On Windows, can be set to the base name of GetProcessImageFileNameW. | Any Str | true |
-| process.executable.path | The full path to the process executable. On Linux based systems, can be set to the target of proc/[pid]/exe. On Windows, can be set to the result of GetProcessImageFileNameW. | Any Str | true |
-| process.owner | The username of the user that owns the process. | Any Str | true |
-| process.parent_pid | Parent Process identifier (PPID). | Any Int | true |
-| process.pid | Process identifier (PID). | Any Int | true |
+| Name | Description | Values | Enabled | Semantic Convention |
+| ---- | ----------- | ------ | ------- | ------------------- |
+| process.cgroup | cgroup associated with the process (Linux only). | Any Str | false | - |
+| process.command | The command used to launch the process (i.e. the command name). On Linux based systems, can be set to the zeroth string in proc/[pid]/cmdline. On Windows, can be set to the first parameter extracted from GetCommandLineW. | Any Str | true | - |
+| process.command_line | The full command used to launch the process as a single string representing the full command. On Windows, can be set to the result of GetCommandLineW. Do not set this if you have to assemble it just for monitoring; use process.command_args instead. | Any Str | true | - |
+| process.executable.name | The name of the process executable. On Linux based systems, can be set to the Name in proc/[pid]/status. On Windows, can be set to the base name of GetProcessImageFileNameW. | Any Str | true | - |
+| process.executable.path | The full path to the process executable. On Linux based systems, can be set to the target of proc/[pid]/exe. On Windows, can be set to the result of GetProcessImageFileNameW. | Any Str | true | - |
+| process.owner | The username of the user that owns the process. | Any Str | true | - |
+| process.parent_pid | Parent Process identifier (PPID). | Any Int | true | - |
+| process.pid | Process identifier (PID). | Any Int | true | - |

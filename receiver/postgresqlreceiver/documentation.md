@@ -18,7 +18,7 @@ The number of backends.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | false | development |
+| 1 | Sum | Int | Cumulative | false | Development |
 
 ### postgresql.bgwriter.buffers.allocated
 
@@ -26,7 +26,7 @@ Number of buffers allocated.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {buffers} | Sum | Int | Cumulative | true | development |
+| {buffers} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.bgwriter.buffers.writes
 
@@ -34,13 +34,13 @@ Number of buffers written.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {buffers} | Sum | Int | Cumulative | true | development |
+| {buffers} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| source | The source of a buffer write. | Str: ``backend``, ``backend_fsync``, ``checkpoints``, ``bgwriter`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| source | The source of a buffer write. | Str: ``backend``, ``backend_fsync``, ``checkpoints``, ``bgwriter`` | Recommended | - |
 
 ### postgresql.bgwriter.checkpoint.count
 
@@ -48,13 +48,13 @@ The number of checkpoints performed.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {checkpoints} | Sum | Int | Cumulative | true | development |
+| {checkpoints} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| type | The type of checkpoint state. | Str: ``requested``, ``scheduled`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| type | The type of checkpoint state. | Str: ``requested``, ``scheduled`` | Recommended | - |
 
 ### postgresql.bgwriter.duration
 
@@ -62,13 +62,13 @@ Total time spent writing and syncing files to disk by checkpoints.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| ms | Sum | Double | Cumulative | true | development |
+| ms | Sum | Double | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| type | The type of time spent during the checkpoint. | Str: ``sync``, ``write`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| type | The type of time spent during the checkpoint. | Str: ``sync``, ``write`` | Recommended | - |
 
 ### postgresql.bgwriter.maxwritten
 
@@ -76,7 +76,7 @@ Number of times the background writer stopped a cleaning scan because it had wri
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | true | development |
+| 1 | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.blocks_read
 
@@ -84,13 +84,13 @@ The number of blocks read.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | true | development |
+| 1 | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| source | The block read source type. | Str: ``heap_read``, ``heap_hit``, ``idx_read``, ``idx_hit``, ``toast_read``, ``toast_hit``, ``tidx_read``, ``tidx_hit`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| source | The block read source type. | Str: ``heap_read``, ``heap_hit``, ``idx_read``, ``idx_hit``, ``toast_read``, ``toast_hit``, ``tidx_read``, ``tidx_hit`` | Recommended | - |
 
 ### postgresql.commits
 
@@ -98,7 +98,7 @@ The number of commits.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | true | development |
+| 1 | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.connection.max
 
@@ -106,7 +106,7 @@ Configured maximum number of client connections allowed
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {connections} | Gauge | Int | development |
+| {connections} | Gauge | Int | Development |
 
 ### postgresql.database.count
 
@@ -114,7 +114,7 @@ Number of user databases.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {databases} | Sum | Int | Cumulative | false | development |
+| {databases} | Sum | Int | Cumulative | false | Development |
 
 ### postgresql.db_size
 
@@ -122,7 +122,7 @@ The database disk usage.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | false | development |
+| By | Sum | Int | Cumulative | false | Development |
 
 ### postgresql.index.scans
 
@@ -130,7 +130,7 @@ The number of index scans on a table.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {scans} | Sum | Int | Cumulative | true | development |
+| {scans} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.index.size
 
@@ -138,7 +138,7 @@ The size of the index on disk.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| By | Gauge | Int | development |
+| By | Gauge | Int | Development |
 
 ### postgresql.operations
 
@@ -146,13 +146,13 @@ The number of db row operations.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | true | development |
+| 1 | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| operation | The database operation. | Str: ``ins``, ``upd``, ``del``, ``hot_upd`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| operation | The database operation. | Str: ``ins``, ``upd``, ``del``, ``hot_upd`` | Recommended | - |
 
 ### postgresql.replication.data_delay
 
@@ -160,13 +160,13 @@ The amount of data delayed in replication.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| By | Gauge | Int | development |
+| By | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | Recommended | - |
 
 ### postgresql.rollbacks
 
@@ -174,7 +174,7 @@ The number of rollbacks.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | true | development |
+| 1 | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.rows
 
@@ -182,13 +182,13 @@ The number of rows in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| 1 | Sum | Int | Cumulative | false | development |
+| 1 | Sum | Int | Cumulative | false | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| state | The tuple (row) state. | Str: ``dead``, ``live`` | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| state | The tuple (row) state. | Str: ``dead``, ``live`` | Recommended | - |
 
 ### postgresql.table.count
 
@@ -196,7 +196,7 @@ Number of user tables in a database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {table} | Sum | Int | Cumulative | false | development |
+| {table} | Sum | Int | Cumulative | false | Development |
 
 ### postgresql.table.size
 
@@ -204,7 +204,7 @@ Disk space used by a table.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | false | development |
+| By | Sum | Int | Cumulative | false | Development |
 
 ### postgresql.table.vacuum.count
 
@@ -212,7 +212,7 @@ Number of times a table has manually been vacuumed.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {vacuums} | Sum | Int | Cumulative | true | development |
+| {vacuum} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.wal.age
 
@@ -223,7 +223,7 @@ This metric requires WAL to be enabled with at least one replica.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 ### postgresql.wal.lag
 
@@ -234,14 +234,14 @@ This metric requires WAL to be enabled with at least one replica.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Int | development |
+| s | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| operation | The operation which is responsible for the lag. | Str: ``flush``, ``replay``, ``write`` | false |
-| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| operation | The operation which is responsible for the lag. | Str: ``flush``, ``replay``, ``write`` | Recommended | - |
+| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | Recommended | - |
 
 ## Optional Metrics
 
@@ -259,7 +259,7 @@ Number of times disk blocks were found already in the buffer cache.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {blks_hit} | Sum | Int | Cumulative | true | development |
+| {blks_hit} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.blks_read
 
@@ -267,7 +267,7 @@ Number of disk blocks read in this database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {blks_read} | Sum | Int | Cumulative | true | development |
+| {blks_read} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.database.locks
 
@@ -275,15 +275,15 @@ The number of database locks.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| {lock} | Gauge | Int | development |
+| {lock} | Gauge | Int | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| relation | OID of the relation targeted by the lock, or null if the target is not a relation or part of a relation. | Any Str | false |
-| mode | Name of the lock mode held or desired by the process. | Any Str | false |
-| lock_type | Type of the lockable object. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| relation | OID of the relation targeted by the lock, or null if the target is not a relation or part of a relation. | Any Str | Recommended | - |
+| mode | Name of the lock mode held or desired by the process. | Any Str | Recommended | - |
+| lock_type | Type of the lockable object. | Any Str | Recommended | - |
 
 ### postgresql.deadlocks
 
@@ -291,7 +291,7 @@ The number of deadlocks.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {deadlock} | Sum | Int | Cumulative | true | development |
+| {deadlock} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.function.calls
 
@@ -299,13 +299,13 @@ The number of calls made to a function. Requires `track_functions=pl|all` in Pos
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {call} | Sum | Int | Cumulative | true | development |
+| {call} | Sum | Int | Cumulative | true | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| function | The name of the function. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| function | The name of the function. | Any Str | Recommended | - |
 
 ### postgresql.sequential_scans
 
@@ -313,7 +313,7 @@ The number of sequential scans.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {sequential_scan} | Sum | Int | Cumulative | true | development |
+| {sequential_scan} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.temp.io
 
@@ -321,7 +321,7 @@ Total amount of data written to temporary files by queries.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| By | Sum | Int | Cumulative | true | development |
+| By | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.temp_files
 
@@ -329,7 +329,7 @@ The number of temp files.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {temp_file} | Sum | Int | Cumulative | true | development |
+| {temp_file} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.tup_deleted
 
@@ -337,7 +337,7 @@ Number of rows deleted by queries in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {tup_deleted} | Sum | Int | Cumulative | true | development |
+| {tup_deleted} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.tup_fetched
 
@@ -345,7 +345,7 @@ Number of rows fetched by queries in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {tup_fetched} | Sum | Int | Cumulative | true | development |
+| {tup_fetched} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.tup_inserted
 
@@ -353,7 +353,7 @@ Number of rows inserted by queries in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {tup_inserted} | Sum | Int | Cumulative | true | development |
+| {tup_inserted} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.tup_returned
 
@@ -361,7 +361,7 @@ Number of rows returned by queries in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {tup_returned} | Sum | Int | Cumulative | true | development |
+| {tup_returned} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.tup_updated
 
@@ -369,7 +369,7 @@ Number of rows updated by queries in the database.
 
 | Unit | Metric Type | Value Type | Aggregation Temporality | Monotonic | Stability |
 | ---- | ----------- | ---------- | ----------------------- | --------- | --------- |
-| {tup_updated} | Sum | Int | Cumulative | true | development |
+| {tup_updated} | Sum | Int | Cumulative | true | Development |
 
 ### postgresql.wal.delay
 
@@ -380,14 +380,14 @@ This metric requires WAL to be enabled with at least one replica.
 
 | Unit | Metric Type | Value Type | Stability |
 | ---- | ----------- | ---------- | --------- |
-| s | Gauge | Double | development |
+| s | Gauge | Double | Development |
 
 #### Attributes
 
-| Name | Description | Values | Optional |
-| ---- | ----------- | ------ | -------- |
-| operation | The operation which is responsible for the lag. | Str: ``flush``, ``replay``, ``write`` | false |
-| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | false |
+| Name | Description | Values | Requirement Level | Semantic Convention |
+| ---- | ----------- | ------ | ----------------- | ------------------- |
+| operation | The operation which is responsible for the lag. | Str: ``flush``, ``replay``, ``write`` | Recommended | - |
+| replication_client | The IP address of the client connected to this backend. If this field is "unix", it indicates either that the client is connected via a Unix socket. | Any Str | Recommended | - |
 
 ## Default Events
 
@@ -399,29 +399,39 @@ events:
     enabled: false
 ```
 
+## Optional Events
+
+The following events are not emitted by default. Each of them can be enabled by applying the following configuration:
+
+```yaml
+events:
+  <event_name>:
+    enabled: true
+```
+
 ### db.server.query_sample
 
 query sample
 
 #### Attributes
 
-| Name | Description | Values |
-| ---- | ----------- | ------ |
-| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Str: ``postgresql`` |
-| db.namespace | The namespace or schema of the database where the query is executed. | Any Str |
-| db.query.text | The text of the database query being executed. | Any Str |
-| user.name | Name of the user logged into this backend. | Any Str |
-| postgresql.state | Current overall state of this backend | Any Str |
-| postgresql.pid | Process ID of this backend. | Any Int |
-| postgresql.application_name | Name of the application that is connected to this backend. | Any Str |
-| network.peer.address | IP address of the client connected to this backend. | Any Str |
-| network.peer.port | TCP port number that the client is using for communication with this backend. | Any Int |
-| postgresql.client_hostname | Host name of the connected client, as reported by a reverse DNS lookup of client_addr. | Any Str |
-| postgresql.query_start | Time when the currently active query was started, or if state is not active, when the last query was started. | Any Str |
-| postgresql.wait_event | Wait event name if backend is currently waiting, otherwise NULL. | Any Str |
-| postgresql.wait_event_type | The type of event for which the backend is waiting, if any; otherwise NULL. | Any Str |
-| postgresql.query_id | Identifier of this backend's most recent query. If state is active this field shows the identifier of the currently executing query. In all other states, it shows the identifier of last query that was executed. | Any Str |
-| postgresql.total_exec_time | Total time spent executing the statement, in delta milliseconds. | Any Double |
+| Name | Description | Values | Semantic Convention |
+| ---- | ----------- | ------ | ------------------- |
+| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Str: ``postgresql`` | - |
+| db.namespace | The namespace or schema of the database where the query is executed. | Any Str | - |
+| db.query.text | The text of the database query being executed. | Any Str | - |
+| user.name | Name of the user logged into this backend. | Any Str | - |
+| postgresql.state | Current overall state of this backend | Any Str | - |
+| postgresql.pid | Process ID of this backend. | Any Int | - |
+| postgresql.application_name | Name of the application that is connected to this backend. | Any Str | - |
+| network.peer.address | IP address of the client connected to this backend. | Any Str | - |
+| network.peer.port | TCP port number that the client is using for communication with this backend. | Any Int | - |
+| postgresql.client_hostname | Host name of the connected client, as reported by a reverse DNS lookup of client_addr. | Any Str | - |
+| postgresql.query_start | Time when the currently active query was started, or if state is not active, when the last query was started. | Any Str | - |
+| postgresql.wait_event | Wait event name if backend is currently waiting, otherwise NULL. | Any Str | - |
+| postgresql.wait_event_type | The type of event for which the backend is waiting, if any; otherwise NULL. | Any Str | - |
+| postgresql.query_id | Identifier of this backend's most recent query. If state is active this field shows the identifier of the currently executing query. In all other states, it shows the identifier of last query that was executed. | Any Str | - |
+| postgresql.total_exec_time | Total time spent executing the statement, in delta milliseconds. | Any Double | - |
 
 ### db.server.top_query
 
@@ -429,30 +439,43 @@ top query
 
 #### Attributes
 
-| Name | Description | Values |
-| ---- | ----------- | ------ |
-| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Str: ``postgresql`` |
-| db.namespace | The namespace or schema of the database where the query is executed. | Any Str |
-| db.query.text | The text of the database query being executed. | Any Str |
-| postgresql.calls | Number of times the statement was executed, reported in delta value. | Any Int |
-| postgresql.rows | Total number of rows retrieved or affected by the statement, reported in delta value. | Any Int |
-| postgresql.shared_blks_dirtied | Total number of shared blocks dirtied by the statement, reported in delta value. | Any Int |
-| postgresql.shared_blks_hit | Total number of shared block cache hits by the statement, reported in delta value. | Any Int |
-| postgresql.shared_blks_read | Total number of shared blocks read by the statement, reported in delta value. | Any Int |
-| postgresql.shared_blks_written | Total number of shared blocks written by the statement, reported in delta value. | Any Int |
-| postgresql.temp_blks_read | Total number of temp blocks read by the statement, reported in delta value. | Any Int |
-| postgresql.temp_blks_written | Total number of temp blocks written by the statement, reported in delta value. | Any Int |
-| postgresql.queryid | Hash code to identify identical normalized queries. | Any Str |
-| postgresql.rolname | The name of the PostgreSQL role that executed the query. | Any Str |
-| postgresql.total_exec_time | Total time spent executing the statement, in delta milliseconds. | Any Double |
-| postgresql.total_plan_time | Total time spent planning the statement, in delta milliseconds. | Any Double |
-| postgresql.query_plan | The execution plan used by PostgreSQL for the query. | Any Str |
+| Name | Description | Values | Semantic Convention |
+| ---- | ----------- | ------ | ------------------- |
+| db.system.name | The database management system (DBMS) product as identified by the client instrumentation. | Str: ``postgresql`` | - |
+| db.namespace | The namespace or schema of the database where the query is executed. | Any Str | - |
+| db.query.text | The text of the database query being executed. | Any Str | - |
+| postgresql.calls | Number of times the statement was executed, reported in delta value. | Any Int | - |
+| postgresql.rows | Total number of rows retrieved or affected by the statement, reported in delta value. | Any Int | - |
+| postgresql.shared_blks_dirtied | Total number of shared blocks dirtied by the statement, reported in delta value. | Any Int | - |
+| postgresql.shared_blks_hit | Total number of shared block cache hits by the statement, reported in delta value. | Any Int | - |
+| postgresql.shared_blks_read | Total number of shared blocks read by the statement, reported in delta value. | Any Int | - |
+| postgresql.shared_blks_written | Total number of shared blocks written by the statement, reported in delta value. | Any Int | - |
+| postgresql.temp_blks_read | Total number of temp blocks read by the statement, reported in delta value. | Any Int | - |
+| postgresql.temp_blks_written | Total number of temp blocks written by the statement, reported in delta value. | Any Int | - |
+| postgresql.queryid | Hash code to identify identical normalized queries. | Any Str | - |
+| postgresql.rolname | The name of the PostgreSQL role that executed the query. | Any Str | - |
+| postgresql.total_exec_time | Total time spent executing the statement, in delta milliseconds. | Any Double | - |
+| postgresql.total_plan_time | Total time spent planning the statement, in delta milliseconds. | Any Double | - |
+| postgresql.query_plan | The execution plan used by PostgreSQL for the query. | Any Str | - |
 
 ## Resource Attributes
 
-| Name | Description | Values | Enabled |
-| ---- | ----------- | ------ | ------- |
-| postgresql.database.name | The name of the database. | Any Str | true |
-| postgresql.index.name | The name of the index on a table. | Any Str | true |
-| postgresql.schema.name | The schema name. | Any Str | true |
-| postgresql.table.name | The table name. | Any Str | true |
+| Name | Description | Values | Enabled | Semantic Convention |
+| ---- | ----------- | ------ | ------- | ------------------- |
+| postgresql.database.name | The name of the database. | Any Str | true | - |
+| postgresql.index.name | The name of the index on a table. | Any Str | true | - |
+| postgresql.schema.name | The schema name. | Any Str | true | - |
+| postgresql.table.name | The table name. | Any Str | true | - |
+| service.instance.id | A unique identifier of the PostgreSQL instance in the format host:port (defaults to 'unknown:5432' in case of error in generating this value). | Any Str | true | - |
+
+## Feature Gates
+
+This component has the following feature gates:
+
+| Feature Gate | Stage | Description | From Version | To Version | Reference |
+| ------------ | ----- | ----------- | ------------ | ---------- | --------- |
+| `postgresqlreceiver.preciselagmetrics` | beta | Metric `postgresql.wal.lag` is replaced by more precise `postgresql.wal.delay`. | v0.89.0 | N/A | [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/30831) |
+| `receiver.postgresql.connectionPool` | beta | Use of connection pooling | v0.96.0 | N/A | [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/30831) |
+| `receiver.postgresql.separateSchemaAttr` | alpha | Moves Schema Names into dedicated Attribute | v0.122.0 | N/A | [Link](https://github.com/open-telemetry/opentelemetry-collector-contrib/issues/29559) |
+
+For more information about feature gates, see the [Feature Gates](https://github.com/open-telemetry/opentelemetry-collector/blob/main/featuregate/README.md) documentation.
