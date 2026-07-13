@@ -34,7 +34,9 @@ If you are not already familiar with connectors, you may find it helpful to firs
 The following settings are available:
 
 - `priority_levels (required)`: list of pipeline level priorities in a 1 - n configuration, multiple pipelines can sit at a single priority level.
-- `retry_interval (optional)`: the frequency at which the pipeline levels will attempt to reestablish connection with all higher priority levels. Default value is 10 minutes. (See Example below for further explanation)
+- `strategy (optional)`: a block selecting the failover strategy and holding its options. Exactly one variant sub-block may be set; omitting `strategy` is equivalent to selecting `standard` with default options. Currently only `standard` is supported.
+  - `strategy.standard.retry_interval (optional)`: the frequency at which the pipeline levels will attempt to reestablish connection with all higher priority levels. Default value is 10 minutes. (See Example below for further explanation)
+- `retry_interval (optional)`: * **Deprecated** * use `strategy.standard.retry_interval` instead. If both are set, `strategy.standard.retry_interval` takes precedence.
 
 The connector intakes a list of `priority_levels` each of which can contain multiple pipelines.
 If any pipeline at a stable level fails, the level is considered unhealthy and the connector will move down one priority level and route all data to the new level (assuming it is stable).
@@ -50,7 +52,9 @@ connectors:
       - [traces/first, traces/also_first]
       - [traces/second]
       - [traces/third]
-    retry_interval: 10s
+    strategy:
+      standard:
+        retry_interval: 10s
 
 service:
   pipelines:

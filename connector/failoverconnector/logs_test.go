@@ -34,7 +34,7 @@ func TestLogsRegisterConsumers(t *testing.T) {
 
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{logsFirst}, {logsSecond}, {logsThird}},
-		RetryInterval:    50 * time.Millisecond,
+		RetryInterval:    durationPtr(50 * time.Millisecond),
 		QueueSettings:    configoptional.Some(exporterhelper.NewDefaultQueueConfig()),
 	}
 
@@ -73,7 +73,7 @@ func TestLogsWithValidFailover(t *testing.T) {
 
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{logsFirst}, {logsSecond}, {logsThird}},
-		RetryInterval:    50 * time.Millisecond,
+		RetryInterval:    durationPtr(50 * time.Millisecond),
 	}
 
 	router := connector.NewLogsRouter(map[pipeline.ID]consumer.Logs{
@@ -88,7 +88,10 @@ func TestLogsWithValidFailover(t *testing.T) {
 	require.NoError(t, err)
 
 	failoverConnector := conn.(*logsFailover)
-	failoverConnector.failover.ModifyConsumerAtIndex(0, consumertest.NewErr(errLogsConsumer))
+	lRouter := failoverConnector.failover
+	strategy := lRouter.strategy.(*standardLogsStrategy)
+
+	strategy.router.ModifyConsumerAtIndex(0, consumertest.NewErr(errLogsConsumer))
 	defer func() {
 		assert.NoError(t, failoverConnector.Shutdown(t.Context()))
 	}()
@@ -96,7 +99,7 @@ func TestLogsWithValidFailover(t *testing.T) {
 	ld := sampleLog()
 
 	require.Eventually(t, func() bool {
-		return consumeLogsAndCheckStable(failoverConnector, 1, ld)
+		return consumeLogsAndCheckStable(lRouter, 1, ld)
 	}, 3*time.Second, 5*time.Millisecond)
 }
 
@@ -108,7 +111,7 @@ func TestLogsWithFailoverError(t *testing.T) {
 
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{logsFirst}, {logsSecond}, {logsThird}},
-		RetryInterval:    50 * time.Millisecond,
+		RetryInterval:    durationPtr(50 * time.Millisecond),
 	}
 
 	router := connector.NewLogsRouter(map[pipeline.ID]consumer.Logs{
@@ -143,7 +146,7 @@ func TestLogsWithQueue(t *testing.T) {
 
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{logsFirst}, {logsSecond}, {logsThird}},
-		RetryInterval:    50 * time.Millisecond,
+		RetryInterval:    durationPtr(50 * time.Millisecond),
 		QueueSettings:    configoptional.Some(exporterhelper.NewDefaultQueueConfig()),
 	}
 
@@ -199,7 +202,7 @@ func TestLogsQueueDoesNotImposeDownstreamDeadline(t *testing.T) {
 	logsFirst := pipeline.NewIDWithName(pipeline.SignalLogs, "logs/first")
 	cfg := &Config{
 		PipelinePriority: [][]pipeline.ID{{logsFirst}},
-		RetryInterval:    50 * time.Millisecond,
+		RetryInterval:    durationPtr(50 * time.Millisecond),
 		QueueSettings:    configoptional.Some(exporterhelper.NewDefaultQueueConfig()),
 	}
 	router := connector.NewLogsRouter(map[pipeline.ID]consumer.Logs{
@@ -229,9 +232,10 @@ func TestLogsQueueDoesNotImposeDownstreamDeadline(t *testing.T) {
 		capture.deadline, time.Until(capture.deadline))
 }
 
-func consumeLogsAndCheckStable(conn *logsFailover, idx int, lr plog.Logs) bool {
-	_ = conn.ConsumeLogs(context.Background(), lr)
-	stableIndex := conn.failover.pS.CurrentPipeline()
+func consumeLogsAndCheckStable(router *logsRouter, idx int, lr plog.Logs) bool {
+	strategy := router.strategy.(*standardLogsStrategy)
+	_ = router.Consume(context.Background(), lr)
+	stableIndex := strategy.TestGetCurrentConsumerIndex()
 	return stableIndex == idx
 }
 
